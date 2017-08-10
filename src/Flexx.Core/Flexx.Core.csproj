@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
+    <TargetFramework>netstandard1.3</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.1.3" />

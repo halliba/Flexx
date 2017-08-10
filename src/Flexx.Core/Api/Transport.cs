@@ -9,7 +9,5 @@
         public byte[] Signature { get; set; }
 
         public string PublicKey { get; set; }
-
-        public bool Encrypted { get; set; }
     }
 }
