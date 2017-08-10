@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flexx.Core", "src\Flexx.Core\Flexx.Core.csproj", "{40098646-E27A-452B-9E75-055FEC7E469B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EBA02A-E0E7-4887-BFB5-2DC05EA606A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{40098646-E27A-452B-9E75-055FEC7E469B} = {02EBA02A-E0E7-4887-BFB5-2DC05EA606A6}
 	EndGlobalSection
 EndGlobal
