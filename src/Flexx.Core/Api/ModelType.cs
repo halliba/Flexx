@@ -2,7 +2,7 @@
 {
     internal enum ModelType
     {
-        KeepAlive,
-        Message,
+        KeepAlive = 1447644225, // MPUB
+        Message = 1112887373 // ALIV
     }
 }

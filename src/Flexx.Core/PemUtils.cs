@@ -4,7 +4,7 @@ using Org.BouncyCastle.OpenSsl;
 
 namespace Flexx.Core
 {
-    internal static class PemUtils
+    public static class PemUtils
     {
         public static AsymmetricKeyParameter GetKeyFromPem(string pemContent)
         {

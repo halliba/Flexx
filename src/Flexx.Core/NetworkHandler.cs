@@ -2,14 +2,18 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Flexx.Core
 {
     internal class NetworkHandler : IDisposable
     {
-        private const ushort UdpPort = 57789;
-        private const ushort TcpPort = 57790;
+        private const ushort UdpPort = 34567;
+        private const ushort TcpPort = 34567;
+
+        private static readonly byte[] MagicNumberBytes = Encoding.UTF8.GetBytes("FLEX");
+        private static readonly int MagicNumber = BitConverter.ToInt32(MagicNumberBytes, 0);
 
         public event EventHandler<DataIncomingEventArgs> PublicDataIncoming;
         public event EventHandler<DataIncomingEventArgs> PrivateDataIncoming;
@@ -35,7 +39,12 @@ namespace Flexx.Core
                 while (!_disposed)
                 {
                     var result = await _udpClient.ReceiveAsync();
-                    OnPublicDataIncoming(result.Buffer, result.RemoteEndPoint);
+                    if (BitConverter.ToInt32(result.Buffer, 0) != MagicNumber)
+                        continue;
+
+                    var data = new byte[result.Buffer.Length - 4];
+                    Buffer.BlockCopy(result.Buffer, 4, data, 0, data.Length);
+                    OnPublicDataIncoming(data, result.RemoteEndPoint);
                 }
             }
             catch (Exception) when (_disposed)
@@ -47,6 +56,7 @@ namespace Flexx.Core
         {
             try
             {
+                _tcpListener.Start();
                 while (!_disposed)
                 {
                     var client = await _tcpListener.AcceptTcpClientAsync();
@@ -57,19 +67,26 @@ namespace Flexx.Core
                 {
                     await Task.Run(async () =>
                     {
+                        var remoteEndPoint = (IPEndPoint) client.Client.RemoteEndPoint;
                         byte[] result;
                         using (var stream = client.GetStream())
                         {
                             var buffer = new byte[4];
+
+                            await stream.ReadAsync(buffer, 0, buffer.Length);
+                            if (BitConverter.ToInt32(buffer, 0) != MagicNumber)
+                                return;
+                            
                             await stream.ReadAsync(buffer, 0, buffer.Length);
                             var length = BitConverter.ToInt32(buffer, 0);
+
                             using (var memoryStream = new MemoryStream())
                             {
                                 await CopyStreamAsync(stream, memoryStream, 1024, length);
                                 result = memoryStream.ToArray();
                             }
                         }
-                        OnPrivateDataIncoming(result, (IPEndPoint)client.Client.RemoteEndPoint);
+                        OnPrivateDataIncoming(result, remoteEndPoint);
                     });
                 }
             }
@@ -89,7 +106,10 @@ namespace Flexx.Core
 
             try
             {
-                await _udpClient.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Broadcast, UdpPort));
+                var bytes = new byte[4 + data.Length];
+                Array.Copy(MagicNumberBytes, 0, bytes, 0, 4);
+                Array.Copy(data, 0, bytes, 4, data.Length);
+                await _udpClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Broadcast, UdpPort));
             }
             catch (Exception) when (_disposed)
             {
@@ -107,6 +127,7 @@ namespace Flexx.Core
                 {
                     await tcpClient.ConnectAsync(targetAdress, TcpPort);
                     var stream = tcpClient.GetStream();
+                    await stream.WriteAsync(MagicNumberBytes, 0, 4);
                     await stream.WriteAsync(BitConverter.GetBytes(data.Length), 0, 4);
                     using (var memoryStream = new MemoryStream(data))
                     {

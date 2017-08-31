@@ -1,4 +1,6 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using System.IO;
+using System.Security.Cryptography;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 
@@ -6,6 +8,16 @@ namespace Flexx.Core
 {
     internal static class CryptUtils
     {
+        public static byte[] GenrateAesKey()
+        {
+            using (var aes = new AesManaged())
+            {
+                aes.KeySize = 128;
+                aes.GenerateKey();
+                return aes.Key;
+            }
+        }
+
         public static byte[] RsaEncryptWithPublic(byte[] data, AsymmetricKeyParameter publicKey)
         {
             var encryptEngine = new Pkcs1Encoding(new RsaEngine());
@@ -16,34 +28,85 @@ namespace Flexx.Core
             return encrypted;
         }
 
-        public static byte[] RsaEncryptWithPrivate(byte[] data, AsymmetricKeyParameter privateKey)
-        {
-            var encryptEngine = new Pkcs1Encoding(new RsaEngine());
-            
-            encryptEngine.Init(true, privateKey);
-
-            var encrypted = encryptEngine.ProcessBlock(data, 0, data.Length);
-            return encrypted;
-        }
-
-        public static byte[] RsaDecryptWithPrivate(byte[] data, AsymmetricKeyParameter privateKey)
+        public static byte[] RsaDecryptWithPrivate(byte[] data, int offset, int length, AsymmetricKeyParameter privateKey)
         {
             var decryptEngine = new Pkcs1Encoding(new RsaEngine());
 
             decryptEngine.Init(false, privateKey);
 
-            var decrypted = decryptEngine.ProcessBlock(data, 0, data.Length);
+            var decrypted = decryptEngine.ProcessBlock(data, offset, length);
             return decrypted;
         }
 
-        public static byte[] RsaDecryptWithPublic(byte[] data, AsymmetricKeyParameter publicKey)
+        /// <summary>
+        /// Encrypt a byte array using AES
+        /// </summary>
+        /// <param name="key">128 bit key</param>
+        /// <param name="secret">byte array that need to be encrypted</param>
+        /// <returns>Encrypted array</returns>
+        public static byte[] AesEncryptByteArray(byte[] secret, byte[] key)
         {
-            var decryptEngine = new Pkcs1Encoding(new RsaEngine());
+            using (var ms = new MemoryStream())
+            {
+                using (var cryptor = new AesManaged())
+                {
+                    cryptor.Mode = CipherMode.CBC;
+                    cryptor.Padding = PaddingMode.PKCS7;
+                    cryptor.KeySize = key.Length * 8;
+                    cryptor.BlockSize = 128;
 
-            decryptEngine.Init(false, publicKey);
+                    //We use the random generated iv created by AesManaged
+                    var iv = cryptor.IV;
 
-            var decrypted = decryptEngine.ProcessBlock(data, 0, data.Length);
-            return decrypted;
+                    using (var cs = new CryptoStream(ms, cryptor.CreateEncryptor(key, iv), CryptoStreamMode.Write))
+                    {
+                        cs.Write(secret, 0, secret.Length);
+                    }
+                    var encryptedContent = ms.ToArray();
+
+                    //Create new byte array that should contain both unencrypted iv and encrypted data
+                    var result = new byte[iv.Length + encryptedContent.Length];
+
+                    //copy our 2 array into one
+                    System.Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
+                    System.Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
+
+                    return result;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decrypt a byte array using AES
+        /// </summary>
+        /// <param name="encrypted"></param>
+        /// <param name="key">128 bit key</param>
+        /// <returns>decrypted bytes</returns>
+        public static byte[] AesDecryptBytes(byte[] encrypted, byte[] key)
+        {
+            var iv = new byte[16]; //initial vector is 16 bytes
+            var encryptedContent = new byte[encrypted.Length - 16]; //the rest should be encryptedcontent
+
+            //Copy data to byte array
+            System.Buffer.BlockCopy(encrypted, 0, iv, 0, iv.Length);
+            System.Buffer.BlockCopy(encrypted, iv.Length, encryptedContent, 0, encryptedContent.Length);
+
+            using (var ms = new MemoryStream())
+            {
+                using (var cryptor = new AesManaged())
+                {
+                    cryptor.Mode = CipherMode.CBC;
+                    cryptor.Padding = PaddingMode.PKCS7;
+                    cryptor.KeySize = key.Length * 8;
+                    cryptor.BlockSize = 128;
+
+                    using (var cs = new CryptoStream(ms, cryptor.CreateDecryptor(key, iv), CryptoStreamMode.Write))
+                    {
+                        cs.Write(encryptedContent, 0, encryptedContent.Length);
+                    }
+                    return ms.ToArray();
+                }
+            }
         }
     }
 }

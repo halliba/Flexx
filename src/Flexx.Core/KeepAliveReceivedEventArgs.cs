@@ -2,7 +2,7 @@
 
 namespace Flexx.Core
 {
-    internal class KeepAliveReceivedEventArgs : EventArgs
+    public class KeepAliveReceivedEventArgs : EventArgs
     {
         public ChatPartner Sender { get; }
 
