@@ -1,0 +1,136 @@
+﻿<Window x:Class="Flexx.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Flexx.Wpf.ViewModels"
+        xmlns:commands="clr-namespace:Flexx.Wpf.Commands"
+        mc:Ignorable="d" Foreground="White" WindowStyle="None" AllowsTransparency="True"
+        Height="500" Width="800" Background="{StaticResource BackgroundBrushSemiLight}"
+        d:DataContext="{d:DesignInstance viewModels:MainViewModel, d:IsDesignTimeCreatable=True}">
+    <Window.CommandBindings>
+        <CommandBinding Command="commands:WindowCommands.Minimize" CanExecute="AlwaysCanExecute" Executed="MinimizeCommand_OnExecuted"/>
+        <CommandBinding Command="commands:WindowCommands.Maximize" CanExecute="AlwaysCanExecute" Executed="MaximizeCommand_OnExecuted"/>
+        <CommandBinding Command="commands:WindowCommands.Close" CanExecute="AlwaysCanExecute" Executed="CloseCommand_OnExecuted"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" MouseLeftButtonDown="TitleBar_OnMouseLeftButtonDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Flexx Messenger" Margin="3"/>
+            <Button Grid.Column="1" Command="commands:WindowCommands.Minimize" Style="{DynamicResource WindowTitleButton}">
+                <Viewbox>
+                    <Canvas Height="16" Width="16">
+                        <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13,13 L 3,13 L 3,11 L 13,11 L 13,13 Z"/>
+                    </Canvas>
+                </Viewbox>
+            </Button>
+            <Button Grid.Column="2" Command="commands:WindowCommands.Maximize" Style="{DynamicResource WindowTitleButton}">
+                <Viewbox>
+                    <Canvas Width="16" Height="16">
+                        <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 11,11 L 5,11 L 5,5 L 11,5 L 11,11 Z M 5,3 L 3,3 L 3,11 L 3,13 L 13,13 L 13,11 L 13,5 L 13,3 L 5,3 Z"/>
+                    </Canvas>
+                </Viewbox>
+            </Button>
+            <Button Grid.Column="3" Command="commands:WindowCommands.Close" Style="{DynamicResource WindowTitleButton}">
+                <Viewbox>
+                    <Canvas Width="16" Height="16">
+                        <Path Data="F1 M 4,3 L 3,3 L 3,12 L 4,12 L 4,3 Z"/>
+                        <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13.657,3.757 L 12.243,2.343 L 8.000,6.586 L 3.757,2.343 L 2.343,3.757 L 6.586,8.000 L 2.343,12.243 L 3.757,13.657 L 8.000,9.414 L 12.243,13.657 L 13.657,12.243 L 9.414,8.000 L 13.657,3.757 Z"/>
+                    </Canvas>
+                </Viewbox>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Chats"/>
+                <Button Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="Neuer Chat" Click="ButtonBase_OnClick" x:Name="NewChatButton">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="1"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Background" TargetName="border" Value="{StaticResource BackgroundBrushLight}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="true">
+                                                <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,5,5,5" Padding="2" x:Name="ChatNameBox"
+                                         Background="{StaticResource BackgroundBrushSemiLight}"
+                                         Foreground="{StaticResource ForegroundBrushLight}"
+                         Visibility="Collapsed"/>
+                <TextBox Grid.Row="3" Grid.Column="0" Margin="5,5,5,5" Padding="2" x:Name="ChatPskBox"
+                                         Background="{StaticResource BackgroundBrushSemiLight}"
+                                         Foreground="{StaticResource ForegroundBrushLight}"
+                         Visibility="Collapsed"/>
+                <Button Grid.Column="1" Grid.Row="3" Style="{StaticResource WindowTitleButton}" x:Name="ChatOpenButton" Click="ChatOpenButton_OnClick" Visibility="Collapsed">
+                    <Viewbox>
+                        <Canvas Width="16" Height="16">
+                            <Path Data="F1 M 4,3 L 3,3 L 3,12 L 4,12 L 4,3 Z"/>
+                            <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13.657,3.757 L 12.243,2.343 L 8.000,6.586 L 3.757,2.343 L 2.343,3.757 L 6.586,8.000 L 2.343,12.243 L 3.757,13.657 L 8.000,9.414 L 12.243,13.657 L 13.657,12.243 L 9.414,8.000 L 13.657,3.757 Z"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <ListView Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" Grid.Row="4" Name="ChatList" ItemsSource="{Binding Chats}" BorderBrush="Transparent" BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
+                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}">
+                </ListView>
+            </Grid>
+            <ContentPresenter Grid.Column="1" Content="{Binding ElementName=ChatList, Path=SelectedItem}" ClipToBounds="True">
+                <ContentPresenter.Style>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ChatViewModelTemplate}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=ChatList, Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="ContentTemplate" Value="{x:Null}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentPresenter.Style>
+            </ContentPresenter>
+        </Grid>
+    </Grid>
+</Window>
