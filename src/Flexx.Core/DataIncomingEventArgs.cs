@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Net;
+using Flexx.Core.Protocol;
 
 namespace Flexx.Core
 {
-    internal class DataIncomingEventArgs : EventArgs
+    internal class PacketIncomingEventArgs : EventArgs
     {
-        public byte[] Data { get; }
+        public string PacketJson { get; }
 
-        public IPEndPoint RemoteEndPoint { get; }
+        public ModelType PacketType { get; }
 
-        public DataIncomingEventArgs(byte[] data, IPEndPoint remoteEndPoint)
+        public PacketIncomingEventArgs(string packetJson, ModelType packetType)
         {
-            Data = data;
-            RemoteEndPoint = remoteEndPoint;
+            PacketJson = packetJson;
+            PacketType = packetType;
         }
     }
 }

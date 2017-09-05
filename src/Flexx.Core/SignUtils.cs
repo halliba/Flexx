@@ -7,7 +7,7 @@ namespace Flexx.Core
     {
         public static byte[] Sign(byte[] data, ICipherParameters privateKey)
         {
-            var sig = SignerUtilities.GetSigner("SHA1withRSA");
+            var sig = SignerUtilities.GetSigner("SHA256withRSA");
             sig.Init(true, privateKey);
 
             sig.BlockUpdate(data, 0, data.Length);
@@ -18,7 +18,7 @@ namespace Flexx.Core
 
         public static bool Verify(byte[] data, byte[] signature, ICipherParameters publicKey)
         {
-            var signer = SignerUtilities.GetSigner("SHA1withRSA");
+            var signer = SignerUtilities.GetSigner("SHA256withRSA");
 
             signer.Init(false, publicKey);
 

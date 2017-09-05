@@ -1,5 +1,5 @@
 ﻿using System;
-using Flexx.Core.Api;
+using Flexx.Core.Protocol;
 
 namespace Flexx.Core
 {

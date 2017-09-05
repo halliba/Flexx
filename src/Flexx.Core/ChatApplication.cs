@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
-using Flexx.Core.Api;
 
 namespace Flexx.Core
 {
@@ -32,7 +30,7 @@ namespace Flexx.Core
         public ChatApplication(PersonalIdentity identity)
         {
             Identity = identity;
-            Me = new ChatPartner(identity, IPAddress.Any);
+            Me = new ChatPartner(identity);
 
             _cryptoAdapter = new CryptoChatAdapter(identity);
             _cryptoAdapter.PrivateMessageReceived +=
@@ -50,13 +48,13 @@ namespace Flexx.Core
 
         public void LeavePublicChatRoom(PublicChatRoom chatRoom) => _cryptoAdapter.LeavePublicChatRoom(chatRoom);
         
-        public async Task SendPrivateMessageAsync(Message message, ChatPartner partner)
+        public async Task SendPrivateMessageAsync(string content, ChatPartner partner)
         {
             if (_disposed)
                 throw new ObjectDisposedException(null);
             try
             {
-                await _cryptoAdapter.SendPrivateMessageAsync(message, partner);
+                await _cryptoAdapter.SendPrivateMessageAsync(content, partner);
             }
             catch (Exception) when (_disposed)
             {

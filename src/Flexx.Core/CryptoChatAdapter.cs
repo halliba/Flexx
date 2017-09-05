@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Flexx.Core.Api;
+using Flexx.Core.Protocol;
+using Org.BouncyCastle.Crypto;
 
 namespace Flexx.Core
 {
@@ -12,8 +12,7 @@ namespace Flexx.Core
     {
         public event EventHandler<MessageReceivedEventArgs> PrivateMessageReceived;
         public event EventHandler<KeepAliveReceivedEventArgs> KeepAliveReceived;
-
-        private byte[] _keepAliveData;
+        
         private bool _disposed;
         private readonly NetworkHandler _networkHandler;
         private readonly PersonalIdentity _personalIdentity;
@@ -24,11 +23,10 @@ namespace Flexx.Core
         internal CryptoChatAdapter(PersonalIdentity identity)
         {
             _personalIdentity = identity;
-            _publicIdentity = new UserIdentity(_personalIdentity.Username, _personalIdentity.PublicKey);
+            _publicIdentity = new UserIdentity(_personalIdentity.Name, _personalIdentity.PublicKey);
 
             _networkHandler = new NetworkHandler();
-            _networkHandler.PrivateDataIncoming += NetworkHandlerOnPrivateDataIncoming;
-            _networkHandler.PublicDataIncoming += NetworkHandlerOnPublicDataIncoming;
+            _networkHandler.PacketIncoming += NetworkHandlerOnPacketIncoming;
         }
 
         internal PublicChatRoom EnterPublicChatRoom(string name, string preSharedKey)
@@ -40,7 +38,7 @@ namespace Flexx.Core
             return chatRoom;
         }
 
-        internal PublicChatRoom EnterPublicChatRoom() => EnterPublicChatRoom("Default", "Default");
+        internal PublicChatRoom EnterPublicChatRoom() => EnterPublicChatRoom(Config.DefaultChatRoom.Name, Config.DefaultChatRoom.Password);
 
         internal void LeavePublicChatRoom(PublicChatRoom chatRoom)
         {
@@ -49,56 +47,26 @@ namespace Flexx.Core
 
         #region incoming
 
-        private async void NetworkHandlerOnPublicDataIncoming(object sender, DataIncomingEventArgs args)
+        private async void NetworkHandlerOnPacketIncoming(object sender, PacketIncomingEventArgs args)
         {
             if (_disposed)
                 throw new ObjectDisposedException(null);
             try
             {
-                if (args.Data.Length < 4)
+                var packet = await JsonUtils.DeserializeAsync<Packet>(args.PacketJson);
+                if (packet == null)
                     return;
-
-                var type = (ModelType) BitConverter.ToInt32(args.Data, 0);
-
-                ChatPartner partner;
-                Transport transport;
-                string json;
-                switch (type)
+                
+                switch (packet.Type)
                 {
                     case ModelType.KeepAlive:
-                        transport = await GetAndVerifyTransportAsync(args.Data, 4, args.Data.Length - 4);
-                        if (transport == null) return;
-                        json = Encoding.Unicode.GetString(transport.Data);
-
-                        var keepAlive = await JsonUtils.DeserializeAsync<KeepAlive>(json);
-                        if (!VerifySenderIntegrity(transport, keepAlive))
-                            return;
-
-                        partner = new ChatPartner(keepAlive.Sender, args.RemoteEndPoint.Address);
-                        OnKeepAliveReceived(partner);
+                        HandleIncomingKeepAliveAsync(args.PacketJson);
                         break;
-                    case ModelType.Message:
-                        var identifier = new byte[64];
-                        Array.Copy(args.Data, 4, identifier, 0, 64);
-                        var chatRoom = _publicRooms.FirstOrDefault(r => r.Identifier.SequenceEqual(identifier));
-                        if (chatRoom == null)
-                            return;
-
-                        var encrypted = new byte[args.Data.Length - (4 + 64)];
-                        Buffer.BlockCopy(args.Data, 4 + 64, encrypted, 0, encrypted.Length);
-                        var decrypted = CryptUtils.AesDecryptBytes(encrypted, chatRoom.PreSharedKey);
-                        
-                        transport = await GetAndVerifyTransportAsync(decrypted, 0, decrypted.Length);
-                        if (transport == null) return;
-                        json = Encoding.Unicode.GetString(transport.Data);
-
-                        var message = await JsonUtils.DeserializeAsync<Message>(json);
-                        if (!VerifySenderIntegrity(transport, message))
-                            return;
-
-                        partner = new ChatPartner(message.Sender, args.RemoteEndPoint.Address);
-                        OnKeepAliveReceived(partner);
-                        chatRoom.OnPublicMessageReceived(new MessageReceivedEventArgs(partner, message));
+                    case ModelType.PublicMessage:
+                        HandleIncomingPublicMessageAsync(args.PacketJson);
+                        break;
+                    case ModelType.PrivateMessage:
+                        HandleIncomingPrivateMessageAsync(args.PacketJson);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -109,36 +77,71 @@ namespace Flexx.Core
             }
         }
 
-        private async void NetworkHandlerOnPrivateDataIncoming(object sender, DataIncomingEventArgs args)
+        private async void HandleIncomingPrivateMessageAsync(string json)
         {
-            if (_disposed)
-                throw new ObjectDisposedException(null);
+            var packet = await JsonUtils.DeserializeAsync<PrivateMessagePacket>(json);
+            if (packet == null)
+                return;
+
+            Message message;
             try
             {
-                var encrypedAesLength = BitConverter.ToInt32(args.Data, 0);
-                var aesKey =
-                    CryptUtils.RsaDecryptWithPrivate(args.Data, 4, encrypedAesLength, _personalIdentity.KeyPair.Private);
-                Console.WriteLine(BitConverter.ToString(aesKey));
+                var aesKey = CryptUtils.RsaDecryptWithPrivate(packet.AesKey, 0, packet.AesKey.Length,
+                    _personalIdentity.KeyPair.Private);
+                var decrypted = CryptUtils.AesDecryptBytes(packet.Content, aesKey);
+                var signedDataJson = Config.DefaultEncoding.GetString(decrypted);
 
-                var encrypted = new byte[args.Data.Length - (4 + encrypedAesLength)];
-                Buffer.BlockCopy(args.Data, 4 + encrypedAesLength, encrypted, 0, encrypted.Length);
-                var decrypted = CryptUtils.AesDecryptBytes(encrypted, aesKey);
-
-                var transport = await GetAndVerifyTransportAsync(decrypted, 0, 0);
-                if (transport == null) return;
-
-                var json = Encoding.Unicode.GetString(transport.Data);
-                var message = await JsonUtils.DeserializeAsync<Message>(json);
-                if (!VerifySenderIntegrity(transport, message))
-                    return;
-
-                var partner = new ChatPartner(message.Sender, args.RemoteEndPoint.Address);
-                OnKeepAliveReceived(partner);
-                OnPrivateMessageReceived(partner, message);
+                message = await GetAndVerifySignedDataAsync<Message>(signedDataJson);
+                if (message == null) return;
             }
-            catch (Exception) when (_disposed)
+            catch (CryptographicException)
             {
+                return;
             }
+            catch (InvalidCipherTextException)
+            {
+                return;
+            }
+
+            var partner = new ChatPartner(message.Sender);
+            OnKeepAliveReceived(partner);
+            OnPrivateMessageReceived(partner, message);
+        }
+
+        private async void HandleIncomingKeepAliveAsync(string json)
+        {
+            var packet = await JsonUtils.DeserializeAsync<KeepAliveMessagePacket>(json);
+            if (packet == null)
+                return;
+
+            var packetContent = Config.DefaultEncoding.GetString(packet.Content);
+            var keepAlive = await GetAndVerifySignedDataAsync<KeepAlive>(packetContent);
+            if (keepAlive == null)
+                return;
+            
+            var partner = new ChatPartner(keepAlive.Sender);
+            OnKeepAliveReceived(partner);
+        }
+
+        private async void HandleIncomingPublicMessageAsync(string json)
+        {
+            var packet = await JsonUtils.DeserializeAsync<PublicMessagePacket>(json);
+            if (packet == null)
+                return;
+
+            var chatRoom = _publicRooms.FirstOrDefault(r => r.Equals(packet.ChatRoom));
+            if (chatRoom == null)
+                return;
+            
+            var decrypted = CryptUtils.AesDecryptBytes(packet.Content, chatRoom.PreSharedKey);
+            var signedJson = Config.DefaultEncoding.GetString(decrypted);
+
+            var message = await GetAndVerifySignedDataAsync<Message>(signedJson);
+            if (message == null) return;
+            
+            var partner = new ChatPartner(message.Sender);
+            OnKeepAliveReceived(partner);
+            chatRoom.OnPublicMessageReceived(new MessageReceivedEventArgs(partner, message));
         }
 
         #endregion
@@ -151,22 +154,15 @@ namespace Flexx.Core
                 throw new ObjectDisposedException(null);
             try
             {
-                if (_keepAliveData == null)
+                var keepAlive = new KeepAlive
                 {
-                    var keepAlive = new KeepAlive
-                    {
-                        Sender = _publicIdentity
-                    };
-
-                    var typeIdentifier = BitConverter.GetBytes((int) ModelType.KeepAlive);
-                    var keepAliveData = await CreateSignAndEncodeTransportAsync(keepAlive);
-
-                    _keepAliveData = new byte[typeIdentifier.Length + keepAliveData.Length];
-                    Buffer.BlockCopy(typeIdentifier, 0, _keepAliveData, 0, typeIdentifier.Length);
-                    Buffer.BlockCopy(keepAliveData, 0, _keepAliveData, typeIdentifier.Length, keepAliveData.Length);
-                }
+                    Sender = _publicIdentity
+                };
                 
-                await _networkHandler.SendPublicData(_keepAliveData);
+                var keepAliveData = await CreateSignAndEncodeDataAsync(keepAlive);
+                var packet = new KeepAliveMessagePacket(keepAliveData);
+                
+                await _networkHandler.SendPacketAsync(packet);
             }
             catch (Exception) when (_disposed)
             {
@@ -186,55 +182,45 @@ namespace Flexx.Core
                 var message = new Message
                 {
                     Content = content,
-                    Sender = _publicIdentity
+                    Sender = _publicIdentity,
+                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
                 };
-                var transport = await CreateSignAndEncodeTransportAsync(message);
-                var encrypted = CryptUtils.AesEncryptByteArray(transport, chatRoom.PreSharedKey);
+                var signedData = await CreateSignAndEncodeDataAsync(message);
+                var encrypted = CryptUtils.AesEncryptByteArray(signedData, chatRoom.PreSharedKey);
 
-                byte[] data;
-                using (var memoryStream = new MemoryStream())
-                {
-                    memoryStream.Write(BitConverter.GetBytes((int) ModelType.Message), 0, 4);
+                var packet = new PublicMessagePacket(encrypted, chatRoom.GetEncryptedIdentifier());
 
-                    memoryStream.Write(chatRoom.Identifier, 0, chatRoom.Identifier.Length);
-
-                    memoryStream.Write(encrypted, 0, encrypted.Length);
-
-                    data = memoryStream.ToArray();
-                }
-
-                await _networkHandler.SendPublicData(data);
+                await _networkHandler.SendPacketAsync(packet);
             }
             catch (Exception) when (_disposed)
             {
             }
         }
 
-        internal async Task SendPrivateMessageAsync(Message message, ChatPartner chatPartner)
+        internal async Task SendPrivateMessageAsync(string content, ChatPartner chatPartner)
         {
             if (_disposed)
                 throw new ObjectDisposedException(null);
+
             try
             {
-                var data = await CreateSignAndEncodeTransportAsync(message);
+                var message = new Message
+                {
+                    Content = content,
+                    Sender = _personalIdentity,
+                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
+                };
+                var signedData = await CreateSignAndEncodeDataAsync(message);
 
                 var publicKey = PemUtils.GetKeyFromPem(chatPartner.Identity.PublicKey);
                 var aesKey = CryptUtils.GenrateAesKey();
-                Console.WriteLine(BitConverter.ToString(aesKey));
 
                 var encryptedAesKey = CryptUtils.RsaEncryptWithPublic(aesKey, publicKey);
-                var encryptedData = CryptUtils.AesEncryptByteArray(data, aesKey);
+                var encryptedData = CryptUtils.AesEncryptByteArray(signedData, aesKey);
 
-                byte[] result;
-                using (var memoryStream = new MemoryStream())
-                {
-                    await memoryStream.WriteAsync(BitConverter.GetBytes(encryptedAesKey.Length), 0, 4);
-                    await memoryStream.WriteAsync(encryptedAesKey, 0, encryptedAesKey.Length);
-                    await memoryStream.WriteAsync(encryptedData, 0, encryptedData.Length);
-                    result = memoryStream.ToArray();
-                }
+                var packet = new PrivateMessagePacket(encryptedData, encryptedAesKey);
 
-                await _networkHandler.SendPrivateData(result, chatPartner.RemoteAdress);
+                await _networkHandler.SendPacketAsync(packet);
             }
             catch (Exception) when (_disposed)
             {
@@ -244,35 +230,40 @@ namespace Flexx.Core
         #endregion
 
         #region helper methods
-
-        private static bool VerifySenderIntegrity(Transport transport, BaseModel model)
-            => model.Sender.PublicKey == transport.PublicKey;
-
-        private static async Task<Transport> GetAndVerifyTransportAsync(byte[] data, int index, int count)
+        
+        private static async Task<T> GetAndVerifySignedDataAsync<T>(string signedDataJson) where T : class
         {
-            var json = Encoding.Unicode.GetString(data, index, count);
-            var transport = await JsonUtils.DeserializeAsync<Transport>(json);
+            var signedData = await JsonUtils.DeserializeAsync<SignedData>(signedDataJson);
 
-            var publicKey = PemUtils.GetKeyFromPem(transport.PublicKey);
-            var isValid = SignUtils.Verify(transport.Data, transport.Signature, publicKey);
+            var dataJson = Config.DefaultEncoding.GetString(signedData.Data);
+            var baseModel = await JsonUtils.DeserializeAsync<BaseModel>(dataJson);
+            if (baseModel?.Sender?.PublicKey == null)
+                return null;
 
-            return isValid ? transport : null;
+            var publicKey = PemUtils.GetKeyFromPem(baseModel.Sender.PublicKey);
+            var dataToVerify = Config.DefaultEncoding.GetBytes(Convert.ToBase64String(signedData.Data));
+            var isValid = SignUtils.Verify(dataToVerify, signedData.Signature, publicKey);
+            if (!isValid)
+                return null;
+
+            var text = Config.DefaultEncoding.GetString(signedData.Data);
+            var model = await JsonUtils.DeserializeAsync<T>(text);
+            return model;
         }
 
-        private async Task<byte[]> CreateSignAndEncodeTransportAsync(BaseModel model)
+        private async Task<byte[]> CreateSignAndEncodeDataAsync(BaseModel model)
         {
             model.Sender = _publicIdentity;
-            var transport = new Transport
+            var signedData = new SignedData
             {
-                Data = Encoding.Unicode.GetBytes(await JsonUtils.SerializeAsync(model))
+                Data = Config.DefaultEncoding.GetBytes(await JsonUtils.SerializeAsync(model))
             };
             
-            var signature = SignUtils.Sign(transport.Data, _personalIdentity.KeyPair.Private);
-            transport.Signature = signature;
-            transport.PublicKey = PemUtils.GetPemFromKey(_personalIdentity.KeyPair.Public);
-
-            var json = await JsonUtils.SerializeAsync(transport);
-            var bytes = Encoding.Unicode.GetBytes(json);
+            var signature = SignUtils.Sign(Config.DefaultEncoding.GetBytes(Convert.ToBase64String(signedData.Data)), _personalIdentity.KeyPair.Private);
+            signedData.Signature = signature;
+            
+            var json = await JsonUtils.SerializeAsync(signedData);
+            var bytes = Config.DefaultEncoding.GetBytes(json);
             return bytes;
         }
 
@@ -289,6 +280,7 @@ namespace Flexx.Core
         {
             PrivateMessageReceived?.Invoke(this, new MessageReceivedEventArgs(sender, message));
         }
+
         #endregion
 
         #region IDisposable

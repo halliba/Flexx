@@ -1,10 +1,12 @@
-﻿namespace Flexx.Core
+﻿using Newtonsoft.Json;
+
+namespace Flexx.Core
 {
     public class UserIdentity
     {
         public bool Equals(UserIdentity other)
         {
-            return string.Equals(Username, other.Username) && string.Equals(PublicKey, other.PublicKey);
+            return string.Equals(Name, other.Name) && string.Equals(PublicKey, other.PublicKey);
         }
 
         public override bool Equals(object obj)
@@ -18,7 +20,7 @@
         {
             unchecked
             {
-                return ((Username != null ? Username.GetHashCode() : 0) * 397) ^ (PublicKey != null ? PublicKey.GetHashCode() : 0);
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (PublicKey != null ? PublicKey.GetHashCode() : 0);
             }
         }
 
@@ -32,14 +34,16 @@
             return !Equals(left, right);
         }
 
-        public UserIdentity(string username, string publicKey)
+        public UserIdentity(string name, string publicKey)
         {
-            Username = username;
+            Name = name;
             PublicKey = publicKey;
         }
-        
-        public string Username { get; }
 
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; }
+
+        [JsonProperty(PropertyName = "publicKey")]
         public string PublicKey { get; }
     }
 }
