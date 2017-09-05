@@ -25,6 +25,7 @@ namespace Flexx.Wpf.ViewModels
         {
             var viewModel = new MessageViewModel(true, _self, ChatPartner.Public, message, DateTime.Now);
             Messages.Add(viewModel);
+            LastActivity = DateTime.Now;
             await _chatRoom.SendMessageAsync(message);
             viewModel.IsSend = true;
         }
