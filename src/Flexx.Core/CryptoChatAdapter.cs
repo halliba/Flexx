@@ -17,7 +17,7 @@ namespace Flexx.Core
         private readonly NetworkHandler _networkHandler;
         private readonly PersonalIdentity _personalIdentity;
         private readonly UserIdentity _publicIdentity;
-
+        
         private readonly List<PublicChatRoom> _publicRooms = new List<PublicChatRoom>();
 
         internal CryptoChatAdapter(PersonalIdentity identity)
