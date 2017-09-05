@@ -13,12 +13,24 @@
         <CommandBinding Command="commands:WindowCommands.Maximize" CanExecute="AlwaysCanExecute" Executed="MaximizeCommand_OnExecuted"/>
         <CommandBinding Command="commands:WindowCommands.Close" CanExecute="AlwaysCanExecute" Executed="CloseCommand_OnExecuted"/>
     </Window.CommandBindings>
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=WindowState}" Value="Maximized">
+                    <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" MouseLeftButtonDown="TitleBar_OnMouseLeftButtonDown">
+            <Grid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="commands:WindowCommands.Maximize"/>
+            </Grid.InputBindings>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -61,6 +73,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -118,6 +131,8 @@
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
                           ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}">
                 </ListView>
+                <CheckBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" Content="Inkognito Modus" IsChecked="{Binding IsIncognitoModeEnabled}" Margin="7"
+                          Foreground="{StaticResource ForegroundBrushLight}" Background="{StaticResource BackgroundBrushLight}"/>
             </Grid>
             <ContentPresenter Grid.Column="1" Content="{Binding ElementName=ChatList, Path=SelectedItem}" ClipToBounds="True">
                 <ContentPresenter.Style>

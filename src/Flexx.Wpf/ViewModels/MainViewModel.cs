@@ -15,6 +15,17 @@ namespace Flexx.Wpf.ViewModels
 
         public ChatCollection Chats { get; } = new ChatCollection();
 
+        public bool IsIncognitoModeEnabled
+        {
+            get => !_chatApp.SendKeepAlive;
+            set
+            {
+                if (value == !_chatApp.SendKeepAlive) return;
+                _chatApp.SendKeepAlive = !value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
             _self = new ChatPartner(_identity);

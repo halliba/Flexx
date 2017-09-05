@@ -12,7 +12,7 @@ namespace Flexx.Core
         private bool _disposed;
         private int _keepAliveInterval = 5000;
 
-        private bool SendKeepAlive { get; set; } = false;
+        public bool SendKeepAlive { get; set; } = false;
         public PersonalIdentity Identity { get; }
         public ChatPartner Me { get; }
 
