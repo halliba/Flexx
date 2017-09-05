@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
 using Flexx.Core;
-using System.Timers;
 
 namespace Flexx.Wpf.ViewModels
 {
@@ -13,18 +12,13 @@ namespace Flexx.Wpf.ViewModels
 
         public string Name => _chatRoom.Name;
 
-        public string Abbreviation => _chatRoom.Name.Substring(0, 1);
+        public string Abbreviation => _chatRoom.Name.Substring(0, 1).ToUpper();
 
         public PublicChatViewModel(PublicChatRoom chatRoom, ChatPartner self)
         {
             _chatRoom = chatRoom;
             chatRoom.MessageReceived += NewIncomingMessage;
             _self = self;
-
-            //var timer = new Timer(5000);
-            //timer.Elapsed += (sender, args) => SendMessage("Hello World!");
-            //timer.AutoReset = true;
-            //timer.Start();
         }
 
         protected override async void SendMessage(string message)

@@ -19,7 +19,7 @@ namespace Flexx.Wpf.ViewModels
             }
         }
 
-        public string Abbreviation => ChatPartner.Identity?.Name?.Substring(0,1);
+        public string Abbreviation => ChatPartner.Identity?.Name?.Substring(0,1).ToUpper();
 
         public ChatPartnerViewModel(ChatPartner chatPartner)
         {
