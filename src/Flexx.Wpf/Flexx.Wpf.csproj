@@ -141,7 +141,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="itech_bg.png" />
+    <Resource Include="Recources\Images\itech_bg.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Recources\UserFileTemplate.xml">
