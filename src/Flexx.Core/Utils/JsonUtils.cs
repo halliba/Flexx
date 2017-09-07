@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Flexx.Core
+namespace Flexx.Core.Utils
 {
     internal static class JsonUtils
     {

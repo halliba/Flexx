@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Flexx.Core.Protocol;
+using Flexx.Core.Utils;
 using Org.BouncyCastle.Crypto;
 
 namespace Flexx.Core

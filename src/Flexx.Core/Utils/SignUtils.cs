@@ -1,7 +1,7 @@
 ﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Flexx.Core
+namespace Flexx.Core.Utils
 {
     internal static class SignUtils
     {

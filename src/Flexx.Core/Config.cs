@@ -8,7 +8,7 @@ namespace Flexx.Core
 
         public static (string Name, string Password) DefaultChatRoom { get; set; } = ("Public", "Public");
 
-        public static int PacketTrials { get; set; } = 10;
+        public static int PacketTrials { get; set; } = 1;
 
         public static int PacketTimeout { get; set; } = 10;
     }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Flexx.Core.Utils;
 
 namespace Flexx.Core
 {

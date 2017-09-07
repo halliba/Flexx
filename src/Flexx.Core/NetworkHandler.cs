@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Flexx.Core.Protocol;
+using Flexx.Core.Utils;
 
 namespace Flexx.Core
 {

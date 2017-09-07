@@ -5,7 +5,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 
-namespace Flexx.Core
+namespace Flexx.Core.Utils
 {
     internal static class CryptUtils
     {

@@ -2,7 +2,7 @@
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 
-namespace Flexx.Core
+namespace Flexx.Core.Utils
 {
     public static class PemUtils
     {
