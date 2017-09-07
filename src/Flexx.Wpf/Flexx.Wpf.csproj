@@ -69,6 +69,7 @@
     <Compile Include="AutoScrollBehavior.cs" />
     <Compile Include="ChatCollection.cs" />
     <Compile Include="ColorManager.cs" />
+    <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\PrivateChatIcon.cs" />
@@ -79,9 +80,22 @@
     <Compile Include="MessageTemplateSelector.cs" />
     <Compile Include="PeriodicBindingUpdateBehavior.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\Abstractions\IChatPartnerViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IMessageViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IPrivateChatViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IPublicChatViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IViewModel.cs" />
     <Compile Include="ViewModels\ChatPartnerViewModel.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IMainViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\IChatViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockChatPartnerViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockChatViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockMainViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockMessageViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockPrivateChatViewModel.cs" />
+    <Compile Include="ViewModels\Mock\MockPublicChatViewModel.cs" />
     <Compile Include="ViewModels\PrivateChatViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PublicChatViewModel.cs" />
@@ -147,6 +161,9 @@
     <Content Include="Recources\UserFileTemplate.xml">
       <SubType>Designer</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Themes\Styles\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

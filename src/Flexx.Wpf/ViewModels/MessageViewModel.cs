@@ -1,9 +1,10 @@
 ﻿using System;
 using Flexx.Core;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class MessageViewModel : ViewModel
+    internal class MessageViewModel : ViewModel, IMessageViewModel
     {
         private bool _isSend;
         
@@ -24,15 +25,15 @@ namespace Flexx.Wpf.ViewModels
 
         public bool IsMine { get; }
 
-        public ChatPartner Sender { get; }
+        public IChatPartnerViewModel Sender { get; }
 
-        public ChatPartner Receipient { get; }
+        public IChatPartnerViewModel Receipient { get; }
 
         public MessageViewModel(bool isMine, ChatPartner sender, ChatPartner receipient, string content, DateTime timeStamp)
         {
             IsMine = isMine;
-            Sender = sender;
-            Receipient = receipient;
+            Sender = new ChatPartnerViewModel(sender);
+            Receipient = new ChatPartnerViewModel(receipient);
             Content = content;
             TimeStamp = timeStamp;
         }

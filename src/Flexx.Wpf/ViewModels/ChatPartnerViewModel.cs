@@ -1,9 +1,10 @@
 ﻿using System.Windows.Media;
 using Flexx.Core;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class ChatPartnerViewModel : ViewModel
+    internal class ChatPartnerViewModel : ViewModel, IChatPartnerViewModel
     {
         public ChatPartner ChatPartner { get; }
         private Color _color;
@@ -24,6 +25,7 @@ namespace Flexx.Wpf.ViewModels
         public ChatPartnerViewModel(ChatPartner chatPartner)
         {
             ChatPartner = chatPartner;
+            Color = UserColors.GetRandom(ChatPartner.Identity?.Name ?? string.Empty);
         }
 
         public ChatPartnerViewModel(ChatPartner chatPartner, Color color)

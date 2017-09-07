@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows.Threading;
 using Flexx.Core;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class PublicChatViewModel : ChatViewModel
+    internal class PublicChatViewModel : ChatViewModel, IPublicChatViewModel
     {
         private readonly PublicChatRoom _chatRoom;
 

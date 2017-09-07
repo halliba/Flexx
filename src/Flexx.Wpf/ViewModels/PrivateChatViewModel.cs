@@ -1,14 +1,15 @@
 ﻿using System;
 using Flexx.Core;
 using Flexx.Core.Protocol;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class PrivateChatViewModel : ChatViewModel
+    internal class PrivateChatViewModel : ChatViewModel, IPrivateChatViewModel
     {
         private readonly ChatApplication _chatApp;
 
-        public ChatPartnerViewModel ChatPartner { get; }
+        public IChatPartnerViewModel ChatPartner { get; }
         
         public PrivateChatViewModel(ChatApplication chatApp, ChatPartner chatPartner)
         {

@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:Flexx.Wpf.ViewModels"
+        xmlns:mocks="clr-namespace:Flexx.Wpf.ViewModels.Mock"
         xmlns:commands="clr-namespace:Flexx.Wpf.Commands"
         mc:Ignorable="d" Foreground="White" WindowStyle="None" AllowsTransparency="True"
         Height="500" Width="800" Background="{StaticResource BackgroundBrushSemiLight}"
-        d:DataContext="{d:DesignInstance viewModels:MainViewModel, d:IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignInstance mocks:MockMainViewModel, d:IsDesignTimeCreatable=True}">
     <Window.CommandBindings>
         <CommandBinding Command="commands:WindowCommands.Minimize" CanExecute="AlwaysCanExecute" Executed="MinimizeCommand_OnExecuted"/>
         <CommandBinding Command="commands:WindowCommands.Maximize" CanExecute="AlwaysCanExecute" Executed="MaximizeCommand_OnExecuted"/>

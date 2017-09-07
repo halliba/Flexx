@@ -2,10 +2,11 @@
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal abstract class ChatViewModel : ViewModel
+    internal abstract class ChatViewModel : ViewModel, IChatViewModel
     {
         private DateTime _lastActivity = DateTime.Now;
         private ICommand _sendMessageCommand;
@@ -38,8 +39,8 @@ namespace Flexx.Wpf.ViewModels
             BindingOperations.EnableCollectionSynchronization(Messages, Messages);
         }
 
-        public ObservableCollection<MessageViewModel> Messages { get; }
-            = new ObservableCollection<MessageViewModel>();
+        public ObservableCollection<IMessageViewModel> Messages { get; }
+            = new ObservableCollection<IMessageViewModel>();
 
         public DateTime LastActivity
         {

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Windows;
 using Flexx.Core;
 using Flexx.Wpf.Properties;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class MainViewModel : ViewModel
+    internal class MainViewModel : ViewModel, IMainViewModel
     {
         private readonly PersonalIdentity _identity = GetIdentity();
         private readonly ChatPartner _self;
@@ -53,7 +54,6 @@ namespace Flexx.Wpf.ViewModels
                 return;
             }
 #endif
-
             _chatApp = new ChatApplication(_identity);
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
             _chatApp.PrivateMessageReceived += ChatAppOnPrivateMessageReceived;
@@ -118,7 +118,7 @@ namespace Flexx.Wpf.ViewModels
             });
         }
 
-        public PublicChatViewModel EnterPublicChat(string name, string password)
+        public IPublicChatViewModel EnterPublicChat(string name, string password)
         {
             var room = _chatApp.EnterPublicChatRoom(name, password);
             var viewModel = new PublicChatViewModel(room, _self);

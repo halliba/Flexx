@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Flexx.Wpf.Controls"
     xmlns:converter="clr-namespace:Flexx.Wpf.Converter">
-    
+
     <converter:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
-    
+
     <Style TargetType="{x:Type controls:PrivateChatIcon}">
         <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
