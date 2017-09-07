@@ -25,50 +25,55 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
-            <DataTemplate DataType="{x:Type abstractions:IPublicChatViewModel}">
-                <Grid Margin="3,5,3,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <controls:PrivateChatIcon Grid.Column="0" Margin="0,0,5,0" Grid.Row="0" Grid.RowSpan="2"
-                                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                              Abbreviation="{Binding Abbreviation}" Color="Green"/>
-                    <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding Name}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}">
-                        <i:Interaction.Behaviors>
-                            <local:PeriodicBindingUpdateBehavior Interval="0:00:05" Property="{x:Static TextBlock.TextProperty}" Mode="UpdateTarget" />
-                        </i:Interaction.Behaviors>
-                    </TextBlock>
-                </Grid>
-            </DataTemplate>
 
-            <DataTemplate DataType="{x:Type abstractions:IPrivateChatViewModel}">
-                <Grid Margin="3,5,3,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <controls:PrivateChatIcon Grid.Column="0" Margin="0,0,5,0" Grid.Row="0" Grid.RowSpan="2"
-                                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                              Abbreviation="{Binding ChatPartner.Abbreviation}" Color="{Binding ChatPartner.Color}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding ChatPartner.ChatPartner.Identity.Name}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}">
-                        <i:Interaction.Behaviors>
-                            <local:PeriodicBindingUpdateBehavior Interval="0:00:05" Property="{x:Static TextBlock.TextProperty}" Mode="UpdateTarget" />
-                        </i:Interaction.Behaviors>
-                    </TextBlock>
-                </Grid>
-            </DataTemplate>
+            <local:ChatListTemplateSelector x:Key="ChatListTemplateSelector">
+                <local:ChatListTemplateSelector.PublicTemplate>
+                    <DataTemplate DataType="abstractions:IPublicChatViewModel">
+                        <Grid Margin="3,5,3,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <controls:ChatIcon Grid.Column="0" Margin="0,0,5,0" Grid.Row="0" Grid.RowSpan="2"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                               Abbreviation="{Binding Abbreviation}" Color="Green"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding Name}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}">
+                                <i:Interaction.Behaviors>
+                                    <local:PeriodicBindingUpdateBehavior Interval="0:00:05" Property="{x:Static TextBlock.TextProperty}" Mode="UpdateTarget" />
+                                </i:Interaction.Behaviors>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </local:ChatListTemplateSelector.PublicTemplate>
+                <local:ChatListTemplateSelector.PrivateTemplate>
+                    <DataTemplate DataType="abstractions:IPrivateChatViewModel">
+                        <Grid Margin="3,5,3,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <controls:ChatIcon Grid.Column="0" Margin="0,0,5,0" Grid.Row="0" Grid.RowSpan="2"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                               Abbreviation="{Binding ChatPartner.Abbreviation}" Color="{Binding ChatPartner.Color}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding ChatPartner.ChatPartner.Identity.Name}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}">
+                                <i:Interaction.Behaviors>
+                                    <local:PeriodicBindingUpdateBehavior Interval="0:00:05" Property="{x:Static TextBlock.TextProperty}" Mode="UpdateTarget" />
+                                </i:Interaction.Behaviors>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </local:ChatListTemplateSelector.PrivateTemplate>
+            </local:ChatListTemplateSelector>
 
             <Style TargetType="{x:Type ListViewItem}" x:Key="MessageItemContainerStyle">
                 <Setter Property="SnapsToDevicePixels" Value="True"/>

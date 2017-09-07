@@ -129,7 +129,7 @@
                 </Button>
                 <ListView Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" Grid.Row="4" Name="ChatList" ItemsSource="{Binding Chats}" BorderBrush="Transparent" BorderThickness="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
-                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}">
+                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplateSelector="{StaticResource ChatListTemplateSelector}">
                 </ListView>
                 <CheckBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" Content="Inkognito Modus" IsChecked="{Binding IsIncognitoModeEnabled}" Margin="7"
                           Foreground="{StaticResource ForegroundBrushLight}" Background="{StaticResource BackgroundBrushLight}"/>

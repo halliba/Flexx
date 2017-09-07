@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace Flexx.Wpf.Controls
 {
-    public class PrivateChatIcon : ContentControl
+    public class ChatIcon : ContentControl
     {
         public static readonly DependencyProperty AbbreviationProperty;
         public static readonly DependencyProperty ColorProperty;
@@ -21,16 +21,16 @@ namespace Flexx.Wpf.Controls
             set => SetValue(ColorProperty, value);
         }
 
-        static PrivateChatIcon()
+        static ChatIcon()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(PrivateChatIcon),
-                new FrameworkPropertyMetadata(typeof(PrivateChatIcon)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ChatIcon),
+                new FrameworkPropertyMetadata(typeof(ChatIcon)));
 
             AbbreviationProperty = DependencyProperty.Register(nameof(Abbreviation), typeof(string),
-                typeof(PrivateChatIcon));
+                typeof(ChatIcon));
 
             ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color),
-                typeof(PrivateChatIcon));
+                typeof(ChatIcon));
         }
     }
 }

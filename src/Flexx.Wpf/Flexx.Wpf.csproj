@@ -72,11 +72,12 @@
     <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
-    <Compile Include="Controls\PrivateChatIcon.cs" />
+    <Compile Include="Controls\ChatIcon.cs" />
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DelegateCommand.cs" />
+    <Compile Include="ChatListTemplateSelector.cs" />
     <Compile Include="MessageTemplateSelector.cs" />
     <Compile Include="PeriodicBindingUpdateBehavior.cs" />
     <Compile Include="Properties\Annotations.cs" />

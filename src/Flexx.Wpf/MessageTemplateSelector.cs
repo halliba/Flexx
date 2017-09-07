@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Flexx.Wpf.ViewModels;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf
 {
@@ -11,7 +11,7 @@ namespace Flexx.Wpf
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (!(item is MessageViewModel viewModel)) return null;
+            if (!(item is IMessageViewModel viewModel)) return null;
             return viewModel.IsMine
                 ? MineTemplate
                 : OppositeTemplate;

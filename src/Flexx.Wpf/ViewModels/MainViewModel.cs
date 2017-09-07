@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using Flexx.Core;
+using Flexx.Core.Utils;
 using Flexx.Wpf.Properties;
 using Flexx.Wpf.ViewModels.Abstractions;
 
@@ -54,6 +56,10 @@ namespace Flexx.Wpf.ViewModels
                 return;
             }
 #endif
+
+            //var timer = new Timer();
+            //timer.Elapsed
+
             _chatApp = new ChatApplication(_identity);
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
             _chatApp.PrivateMessageReceived += ChatAppOnPrivateMessageReceived;

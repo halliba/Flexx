@@ -5,7 +5,7 @@ using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels.Mock
 {
-    internal class MockPrivateChatViewModel : ViewModel, IPrivateChatViewModel
+    internal class MockPrivateChatViewModel : MockChatViewModel, IPrivateChatViewModel
     {
         public IChatPartnerViewModel ChatPartner { get; }
         public void NewIncomingMessage(Message message, ChatPartner partner)
