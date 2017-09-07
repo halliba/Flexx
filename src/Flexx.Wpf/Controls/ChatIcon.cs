@@ -8,18 +8,7 @@ namespace Flexx.Wpf.Controls
     {
         public static readonly DependencyProperty AbbreviationProperty;
         public static readonly DependencyProperty ColorProperty;
-        
-        public string Abbreviation
-        {
-            get => (string)GetValue(AbbreviationProperty);
-            set => SetValue(AbbreviationProperty, value);
-        }
 
-        public Color Color
-        {
-            get => (Color) GetValue(ColorProperty);
-            set => SetValue(ColorProperty, value);
-        }
 
         static ChatIcon()
         {
@@ -31,6 +20,18 @@ namespace Flexx.Wpf.Controls
 
             ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color),
                 typeof(ChatIcon));
+        }
+
+        public string Abbreviation
+        {
+            get => (string) GetValue(AbbreviationProperty);
+            set => SetValue(AbbreviationProperty, value);
+        }
+
+        public Color Color
+        {
+            get => (Color) GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
         }
     }
 }
