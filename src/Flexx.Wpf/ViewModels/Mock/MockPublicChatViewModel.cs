@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using Flexx.Wpf.ViewModels.Abstractions;
+﻿using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels.Mock
 {
@@ -15,4 +14,3 @@ namespace Flexx.Wpf.ViewModels.Mock
         public string Name { get; }
     }
 }
-#endif

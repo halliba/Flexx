@@ -45,6 +45,12 @@ namespace Flexx.Wpf.ViewModels
             var viewModel = new MessageViewModel(false, args.Sender, _self, args.Message.Content, DateTime.Now) {IsSend = true};
             LastActivity = DateTime.Now;
             Dispatcher.CurrentDispatcher.Invoke(() => Contents.Add(viewModel));
+            if (!BeeingRead)
+            {
+                viewModel.IsUnread = true;
+                OnPropertyChanged(nameof(UnreadMessageCount));
+                OnPropertyChanged(nameof(HasUnreadMessages));
+            }
         }
 
         public bool Equals(string name, string password) => _chatRoom.Equals(name, password);

@@ -7,6 +7,8 @@ namespace Flexx.Wpf.ViewModels
     {
         public DateTime TimeStamp { get; }
 
+        public bool IsUnread { get; set; }
+
         public string Message { get; }
 
         public ChatStatusMessage(string message)

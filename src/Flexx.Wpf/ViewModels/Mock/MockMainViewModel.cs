@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels.Mock
@@ -28,4 +27,3 @@ namespace Flexx.Wpf.ViewModels.Mock
         }
     }
 }
-#endif

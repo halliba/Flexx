@@ -12,6 +12,8 @@ namespace Flexx.Wpf.ViewModels
 
         public DateTime TimeStamp { get; }
 
+        public bool IsUnread { get; set; }
+
         public bool IsSend
         {
             get => _isSend;

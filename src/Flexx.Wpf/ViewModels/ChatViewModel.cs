@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using Flexx.Wpf.ViewModels.Abstractions;
@@ -23,21 +24,10 @@ namespace Flexx.Wpf.ViewModels
             }
         }
 
-        public ICommand SendMessageCommand
-            => _sendMessageCommand ?? (_sendMessageCommand = new DelegateCommand(SendMessageInternal));
+        public bool HasUnreadMessages => UnreadMessageCount > 0;
+        public bool BeeingRead { get; set; }
 
-        private void SendMessageInternal(object obj)
-        {
-            if (!(obj is string message) || string.IsNullOrWhiteSpace(message)) return;
-            SendMessage(message);
-        }
-
-        protected abstract void SendMessage(string message);
-
-        protected ChatViewModel()
-        {
-            BindingOperations.EnableCollectionSynchronization(Contents, Contents);
-        }
+        public int UnreadMessageCount => Contents.Count(c => c.IsUnread);
 
         public ObservableCollection<IChatContent> Contents { get; }
             = new ObservableCollection<IChatContent>();
@@ -51,6 +41,32 @@ namespace Flexx.Wpf.ViewModels
                 _lastActivity = value;
                 OnPropertyChanged();
             }
+        }
+
+        public ICommand SendMessageCommand
+            => _sendMessageCommand ?? (_sendMessageCommand = new DelegateCommand(SendMessageInternal));
+
+        public void MarkAsRead()
+        {
+            foreach (var chatContent in Contents.Where(c => c.IsUnread))
+            {
+                chatContent.IsUnread = false;
+            }
+            OnPropertyChanged(nameof(UnreadMessageCount));
+            OnPropertyChanged(nameof(HasUnreadMessages));
+        }
+
+        private void SendMessageInternal(object obj)
+        {
+            if (!(obj is string message) || string.IsNullOrWhiteSpace(message)) return;
+            SendMessage(message);
+        }
+
+        protected abstract void SendMessage(string message);
+
+        protected ChatViewModel()
+        {
+            BindingOperations.EnableCollectionSynchronization(Contents, Contents);
         }
     }
 }

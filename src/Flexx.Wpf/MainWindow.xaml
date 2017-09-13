@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mocks="clr-namespace:Flexx.Wpf.ViewModels.Mock"
         xmlns:commands="clr-namespace:Flexx.Wpf.Commands"
+        xmlns:controls="clr-namespace:Flexx.Wpf.Controls"
         mc:Ignorable="d" Foreground="White" WindowStyle="None" AllowsTransparency="True"
         Height="500" Width="800" Background="{StaticResource BackgroundBrushSemiLight}"
         d:DataContext="{d:DesignInstance mocks:MockMainViewModel, d:IsDesignTimeCreatable=True}">
@@ -76,6 +77,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -112,10 +114,11 @@
                         </Viewbox>
                     </Button>
                 </Grid>
+                
                 <ListView Grid.Column="0" Background="Transparent" Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding Chats}" Name="ChatList"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
-                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}">
-                </ListView>
+                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}"/>
+                
                 <Label Grid.Row="4" Grid.Column="0" Content="Personen"/>
                 <ListView Grid.Column="0" Background="Transparent" Grid.Row="5" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding ChatPartners}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
@@ -124,9 +127,9 @@
                 <CheckBox Grid.Column="0" Grid.Row="6" Content="Inkognito Modus" IsChecked="{Binding IsIncognitoModeEnabled}" Margin="7"
                           Foreground="{StaticResource ForegroundBrushLight}" Background="{StaticResource BackgroundBrushLight}"/>
             </Grid>
-            <ContentPresenter Grid.Column="1" Content="{Binding ElementName=ChatList, Path=SelectedItem}" ClipToBounds="True" AllowDrop="True" Drop="ChatFrame_OnDrop">
-                <ContentPresenter.Style>
-                    <Style TargetType="ContentPresenter">
+            <controls:ChatFrame Grid.Column="1" Content="{Binding ElementName=ChatList, Path=SelectedItem}" ClipToBounds="True" AllowDrop="True" Drop="ChatFrame_OnDrop">
+                <controls:ChatFrame.Style>
+                    <Style TargetType="controls:ChatFrame">
                         <Setter Property="ContentTemplate" Value="{StaticResource ChatTemplate}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=ChatList, Path=SelectedItem}" Value="{x:Null}">
@@ -134,8 +137,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ContentPresenter.Style>
-            </ContentPresenter>
+                </controls:ChatFrame.Style>
+            </controls:ChatFrame>
         </Grid>
     </Grid>
 </Window>

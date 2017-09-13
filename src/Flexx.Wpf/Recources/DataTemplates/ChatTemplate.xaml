@@ -59,8 +59,9 @@
                                         </Grid>
                                     </DataTemplate>
                                     <wpf:MessageTemplateSelector x:Key="TemplateSelector"
-                                                                       MineTemplate="{StaticResource MineMessageTemplate}"
-                                                                       OppositeTemplate="{StaticResource OppositeMessageTemplate}"/>
+                                                                 MineTemplate="{StaticResource MineMessageTemplate}"
+                                                                 OppositeTemplate="{StaticResource OppositeMessageTemplate}"
+                                                                 StatusTemplate="{StaticResource ChatStatusMessageTemplate}"/>
 
                                 </DataTemplate.Resources>
                                 <ContentPresenter ContentTemplateSelector="{StaticResource TemplateSelector}"/>
