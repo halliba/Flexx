@@ -46,5 +46,9 @@ namespace Flexx.Wpf.ViewModels
             LastActivity = DateTime.Now;
             Dispatcher.CurrentDispatcher.Invoke(() => Contents.Add(viewModel));
         }
+
+        public bool Equals(string name, string password) => _chatRoom.Equals(name, password);
+
+        public bool Equals(string name, byte[] preSharedKey) => _chatRoom.Equals(name, preSharedKey);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Flexx.Core.Utils;
 
@@ -38,6 +39,16 @@ namespace Flexx.Core
             if (decrypted == null) return false;
             var encoded = Config.DefaultEncoding.GetString(decrypted);
             return encoded == Name;
+        }
+
+        public bool Equals(string name, string password)
+        {
+            return Name == name && GeneratePreSharedKey(password).SequenceEqual(PreSharedKey);
+        }
+
+        public bool Equals(string name, byte[] preSharedKey)
+        {
+            return Name == name && preSharedKey.SequenceEqual(PreSharedKey);
         }
 
         internal byte[] GetEncryptedIdentifier()

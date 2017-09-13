@@ -76,7 +76,9 @@ namespace Flexx.Wpf.ViewModels
         {
             if (args.Sender.Equals(_identity))
                 return;
-            //if(Chats.Any(c => c.))
+
+            if (Chats.OfType<IPublicChatViewModel>().Any(c => c.Equals(args.Name, args.Psk)))
+                return;
 
             var result = MessageBox.Show(
                 $"{args.Sender.Name} hat dich zum Chat {args.Name} eingeladen. Möchtest du teilnehmen?",
@@ -107,6 +109,8 @@ namespace Flexx.Wpf.ViewModels
 
         public IPublicChatViewModel EnterPublicChat(string name, string password)
         {
+            if (Chats.OfType<IPublicChatViewModel>().Any(c => c.Equals(name, password)))
+                return null;
             var room = _chatApp.EnterPublicChatRoom(name, password);
             var viewModel = new PublicChatViewModel(room, _self);
             Chats.Add(viewModel);
@@ -115,6 +119,9 @@ namespace Flexx.Wpf.ViewModels
 
         public IPublicChatViewModel EnterPublicChat(string name, byte[] preSharedKey)
         {
+            if (Chats.OfType<IPublicChatViewModel>().Any(c => c.Equals(name, preSharedKey)))
+                return null;
+
             var room = _chatApp.EnterPublicChatRoom(name, preSharedKey);
             var viewModel = new PublicChatViewModel(room, _self);
             Chats.Add(viewModel);

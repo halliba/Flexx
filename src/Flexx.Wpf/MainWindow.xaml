@@ -71,72 +71,57 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="2*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Chats"/>
-                <Button Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="Neuer Chat" Click="ButtonBase_OnClick">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderBrush" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="1"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource BackgroundBrushLight}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsPressed" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryBrush}"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,5,5,5" Padding="2" x:Name="ChatNameBox"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Chats"/>
+                    <Button Grid.Column="1" Click="ButtonBase_OnClick" Style="{StaticResource WindowTitleButton}">
+                        <Viewbox>
+                            <Canvas Width="16" Height="16">
+                                <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 14,7 L 9,7 L 9,2 L 7,2 L 7,7 L 2,7 L 2,9 L 7,9 L 7,14 L 9,14 L 9,9 L 14,9 L 14,7 Z"/>
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+                <TextBox Grid.Row="1" Grid.Column="0" Margin="5,5,5,5" Padding="2" x:Name="ChatNameBox"
                                          Background="{StaticResource BackgroundBrushSemiLight}"
                                          Foreground="{StaticResource ForegroundBrushLight}"
                          Visibility="Collapsed"/>
-                <TextBox Grid.Row="3" Grid.Column="0" Margin="5,5,5,5" Padding="2" x:Name="ChatPskBox"
-                                         Background="{StaticResource BackgroundBrushSemiLight}"
-                                         Foreground="{StaticResource ForegroundBrushLight}"
-                         Visibility="Collapsed"/>
-                <Button Grid.Column="1" Grid.Row="3" Style="{StaticResource WindowTitleButton}" x:Name="ChatOpenButton" Click="ChatOpenButton_OnClick" Visibility="Collapsed">
-                    <Viewbox>
-                        <Canvas Width="16" Height="16">
-                            <Path Data="F1 M 4,3 L 3,3 L 3,12 L 4,12 L 4,3 Z"/>
-                            <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13.657,3.757 L 12.243,2.343 L 8.000,6.586 L 3.757,2.343 L 2.343,3.757 L 6.586,8.000 L 2.343,12.243 L 3.757,13.657 L 8.000,9.414 L 12.243,13.657 L 13.657,12.243 L 9.414,8.000 L 13.657,3.757 Z"/>
-                        </Canvas>
-                    </Viewbox>
-                </Button>
-                <ListView Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" Grid.Row="4" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding Chats}" Name="ChatList"
+                <Grid Grid.Row="2" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Margin="5,5,5,5" Padding="2" x:Name="ChatPskBox"
+                             Background="{StaticResource BackgroundBrushSemiLight}"
+                             Foreground="{StaticResource ForegroundBrushLight}"
+                             Visibility="Collapsed"/>
+                    <Button Grid.Column="1" Style="{StaticResource WindowTitleButton}" x:Name="ChatOpenButton" Click="ChatOpenButton_OnClick" Visibility="Collapsed">
+                        <Viewbox>
+                            <Canvas Width="16" Height="16">
+                                <Path Data="F1 M 4,3 L 3,3 L 3,12 L 4,12 L 4,3 Z"/>
+                                <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13.657,3.757 L 12.243,2.343 L 8.000,6.586 L 3.757,2.343 L 2.343,3.757 L 6.586,8.000 L 2.343,12.243 L 3.757,13.657 L 8.000,9.414 L 12.243,13.657 L 13.657,12.243 L 9.414,8.000 L 13.657,3.757 Z"/>
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+                <ListView Grid.Column="0" Background="Transparent" Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding Chats}" Name="ChatList"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
                           ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}">
                 </ListView>
-                <ListView Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" Grid.Row="5" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding ChatPartners}"
+                <Label Grid.Row="4" Grid.Column="0" Content="Personen"/>
+                <ListView Grid.Column="0" Background="Transparent" Grid.Row="5" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding ChatPartners}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
                           ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatPartnerListTemplate}"
                           MouseMove="ChatPartnerList_OnMouseMove"/>
-                <CheckBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Content="Inkognito Modus" IsChecked="{Binding IsIncognitoModeEnabled}" Margin="7"
+                <CheckBox Grid.Column="0" Grid.Row="6" Content="Inkognito Modus" IsChecked="{Binding IsIncognitoModeEnabled}" Margin="7"
                           Foreground="{StaticResource ForegroundBrushLight}" Background="{StaticResource BackgroundBrushLight}"/>
             </Grid>
             <ContentPresenter Grid.Column="1" Content="{Binding ElementName=ChatList, Path=SelectedItem}" ClipToBounds="True" AllowDrop="True" Drop="ChatFrame_OnDrop">

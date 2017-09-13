@@ -12,6 +12,9 @@ namespace Flexx.Wpf.ViewModels.Mock
         public string MessageDraft { get; set; } = "Hello World!";
         public ObservableCollection<IChatContent> Contents { get; } = new ObservableCollection<IChatContent>();
         public ICommand SendMessageCommand { get; } = null;
+
+        public bool Equals(string name, string password) => false;
+        public bool Equals(string name, byte[] preSharedKey) => false;
     }
 }
 #endif
