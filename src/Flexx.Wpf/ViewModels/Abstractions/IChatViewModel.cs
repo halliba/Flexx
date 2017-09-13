@@ -8,7 +8,7 @@ namespace Flexx.Wpf.ViewModels.Abstractions
     {
         DateTime LastActivity { get; set; }
         string MessageDraft { get; set; }
-        ObservableCollection<IMessageViewModel> Messages { get; }
+        ObservableCollection<IChatContent> Contents { get; }
         ICommand SendMessageCommand { get; }
     }
 }

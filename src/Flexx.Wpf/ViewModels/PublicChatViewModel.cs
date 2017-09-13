@@ -25,7 +25,7 @@ namespace Flexx.Wpf.ViewModels
         protected override async void SendMessage(string message)
         {
             var viewModel = new MessageViewModel(true, _self, UserIdentity.Public, message, DateTime.Now);
-            Messages.Add(viewModel);
+            Contents.Add(viewModel);
             LastActivity = DateTime.Now;
             await _chatRoom.SendMessageAsync(message);
             viewModel.IsSend = true;
@@ -34,16 +34,17 @@ namespace Flexx.Wpf.ViewModels
         public async void SendInvite(UserIdentity user)
         {
             await _chatRoom.SendInviteAsync(user);
+            Contents.Add(new ChatStatusMessage($"{user.Name} wurde zum Chat eingeladen"));
         }
 
         private void NewIncomingMessage(object sender, MessageReceivedEventArgs args)
         {
-            if (_self.Equals(args.Sender))
+            if (_self.ChatPartner.Equals(args.Sender))
                 return;
 
             var viewModel = new MessageViewModel(false, args.Sender, _self, args.Message.Content, DateTime.Now) {IsSend = true};
             LastActivity = DateTime.Now;
-            Dispatcher.CurrentDispatcher.Invoke(() => Messages.Add(viewModel));
+            Dispatcher.CurrentDispatcher.Invoke(() => Contents.Add(viewModel));
         }
     }
 }

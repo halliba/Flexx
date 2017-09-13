@@ -4,7 +4,7 @@ using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
 {
-    internal class MessageViewModel : ViewModel, IMessageViewModel
+    internal class MessageViewModel : ViewModel, IMessageViewModel, IChatContent
     {
         private bool _isSend;
         

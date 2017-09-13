@@ -36,11 +36,11 @@ namespace Flexx.Wpf.ViewModels
 
         protected ChatViewModel()
         {
-            BindingOperations.EnableCollectionSynchronization(Messages, Messages);
+            BindingOperations.EnableCollectionSynchronization(Contents, Contents);
         }
 
-        public ObservableCollection<IMessageViewModel> Messages { get; }
-            = new ObservableCollection<IMessageViewModel>();
+        public ObservableCollection<IChatContent> Contents { get; }
+            = new ObservableCollection<IChatContent>();
 
         public DateTime LastActivity
         {

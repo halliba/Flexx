@@ -1,0 +1,18 @@
+﻿using System;
+using Flexx.Wpf.ViewModels.Abstractions;
+
+namespace Flexx.Wpf.ViewModels
+{
+    internal class ChatStatusMessage : ViewModel, IChatContent
+    {
+        public DateTime TimeStamp { get; }
+
+        public string Message { get; }
+
+        public ChatStatusMessage(string message)
+        {
+            Message = message;
+            TimeStamp = DateTime.Now;
+        }
+    }
+}

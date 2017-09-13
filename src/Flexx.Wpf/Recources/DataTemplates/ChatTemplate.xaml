@@ -2,7 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:abstractions="clr-namespace:Flexx.Wpf.ViewModels.Abstractions"
                     xmlns:wpf="clr-namespace:Flexx.Wpf"
-                    xmlns:controls="clr-namespace:Flexx.Wpf.Controls">
+                    xmlns:controls="clr-namespace:Flexx.Wpf.Controls"
+                    xmlns:converter="clr-namespace:Flexx.Wpf.Converter"
+                    xmlns:viewModels="clr-namespace:Flexx.Wpf.ViewModels">
+    <converter:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+    
     <DataTemplate DataType="{x:Type abstractions:IChatViewModel}" x:Key="ChatTemplate">
         <Border ClipToBounds="True" Background="{StaticResource BackgroundBrushLight}">
             <Grid>
@@ -15,7 +19,7 @@
                 </Grid.RowDefinitions>
                 <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto"
                                   wpf:AutoScrollBehavior.AutoScroll="True" VerticalAlignment="Bottom">
-                    <ItemsControl ItemsSource="{Binding Messages}" BorderBrush="Transparent" BorderThickness="0"
+                    <ItemsControl ItemsSource="{Binding Contents}" BorderBrush="Transparent" BorderThickness="0"
                                       HorizontalContentAlignment="Stretch">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -43,6 +47,14 @@
                                             <Border Grid.Column="1" Background="{StaticResource BackgroundBrushSemiLight}" CornerRadius="5" Margin="3"
                                                         HorizontalAlignment="Left">
                                                 <TextBlock Margin="5" Text="{Binding Content}" TextWrapping="Wrap" HorizontalAlignment="Left"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ChatStatusMessage}" x:Key="ChatStatusMessageTemplate">
+                                        <Grid Margin="0,2,0,2">
+                                            <Border Background="{StaticResource BackgroundBrushLight}" CornerRadius="5" Margin="3"
+                                                    HorizontalAlignment="Center">
+                                                <TextBlock Margin="2" Text="{Binding Message}" TextWrapping="Wrap" HorizontalAlignment="Center"/>
                                             </Border>
                                         </Grid>
                                     </DataTemplate>

@@ -76,6 +76,7 @@ namespace Flexx.Wpf.ViewModels
         {
             if (args.Sender.Equals(_identity))
                 return;
+            //if(Chats.Any(c => c.))
 
             var result = MessageBox.Show(
                 $"{args.Sender.Name} hat dich zum Chat {args.Name} eingeladen. Möchtest du teilnehmen?",

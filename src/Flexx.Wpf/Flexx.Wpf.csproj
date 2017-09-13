@@ -85,11 +85,13 @@
     <Compile Include="MessageTemplateSelector.cs" />
     <Compile Include="PeriodicBindingUpdateBehavior.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\Abstractions\ChatContent.cs" />
     <Compile Include="ViewModels\Abstractions\IChatPartnerViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IMessageViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IPublicChatViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IViewModel.cs" />
     <Compile Include="ViewModels\ChatPartnerViewModel.cs" />
+    <Compile Include="ViewModels\ChatStatusMessage.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IMainViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IChatViewModel.cs" />
