@@ -1,23 +1,36 @@
 ﻿namespace Flexx.Core
 {
-    public struct ChatPartner
-    {
-        public UserIdentity Identity { get; }
+    //public struct ChatPartner
+    //{
+    //    private UserIdentity _identity;
 
-        public bool IsPublic { get; }
+    //    public bool IsPublic { get; }
 
-        public static ChatPartner Public => new ChatPartner(null, true);
+    //    public string Name
+    //    {
+    //        get => _identity.Name;
+    //        set
+    //        {
+    //            if (value.Equals(_identity.Name))
+    //                return;
+    //            _identity = new UserIdentity(value, _identity.PublicKey);
+    //        }
+    //    }
 
-        public ChatPartner(UserIdentity identity)
-        {
-            Identity = identity;
-            IsPublic = false;
-        }
+    //    public string 
 
-        private ChatPartner(UserIdentity identity, bool isPublic)
-        {
-            Identity = identity;
-            IsPublic = isPublic;
-        }
-    }
+    //    public static ChatPartner Public => new ChatPartner(null, true);
+
+    //    public ChatPartner(UserIdentity identity)
+    //    {
+    //        _identity = identity;
+    //        IsPublic = false;
+    //    }
+
+    //    private ChatPartner(UserIdentity identity, bool isPublic)
+    //    {
+    //        _identity = identity;
+    //        IsPublic = isPublic;
+    //    }
+    //}
 }

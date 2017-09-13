@@ -3,22 +3,22 @@ using Newtonsoft.Json;
 
 namespace Flexx.Core.Protocol
 {
-    internal class PrivateMessagePacket : Packet
+    internal class InvitePacket : Packet
     {
         [JsonProperty(PropertyName = "aesKey")]
         public byte[] AesKey { get; set; }
 
-        public PrivateMessagePacket(byte[] content, byte[] aesKey)
+        public InvitePacket(byte[] content, byte[] aesKey)
         {
-            Type = ModelType.PrivateMessage;
+            Type = ModelType.Invite;
             Content = content;
             AesKey = aesKey;
             Id = Guid.NewGuid();
         }
 
-        public PrivateMessagePacket()
+        public InvitePacket()
         {
-            Type = ModelType.PrivateMessage;
+            Type = ModelType.Invite;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 using Flexx.Core;
 using Flexx.Wpf.ViewModels.Abstractions;
 
@@ -6,8 +7,8 @@ namespace Flexx.Wpf.ViewModels
 {
     internal class ChatPartnerViewModel : ViewModel, IChatPartnerViewModel
     {
-        public ChatPartner ChatPartner { get; }
         private Color _color;
+        private DateTime _lastActivity;
 
         public Color Color
         {
@@ -20,18 +21,53 @@ namespace Flexx.Wpf.ViewModels
             }
         }
 
-        public string Abbreviation => ChatPartner.Identity?.Name?.Substring(0,1).ToUpper();
+        public UserIdentity ChatPartner { get; private set; }
 
-        public ChatPartnerViewModel(ChatPartner chatPartner)
+        public string Abbreviation => ChatPartner?.Name?.Substring(0,1).ToUpper();
+
+        public DateTime LastActivity
         {
-            ChatPartner = chatPartner;
-            Color = UserColors.GetRandom(ChatPartner.Identity?.Name ?? string.Empty);
+            get => _lastActivity;
+            set
+            {
+                if (value.Equals(_lastActivity)) return;
+                _lastActivity = value;
+                OnPropertyChanged();
+            }
         }
 
-        public ChatPartnerViewModel(ChatPartner chatPartner, Color color)
+        public string Name
+        {
+            get => ChatPartner?.Name;
+            set
+            {
+                if (value == ChatPartner.Name) return;
+                ChatPartner = new UserIdentity(value, ChatPartner.PublicKey);
+                OnPropertyChanged();
+                OnPropertyChanged(Abbreviation);
+                AssignColor();
+            }
+        }
+
+        public string PublicKey => ChatPartner?.PublicKey;
+
+        public ChatPartnerViewModel(UserIdentity chatPartner)
+        {
+            ChatPartner = chatPartner;
+            AssignColor();
+        }
+
+        private void AssignColor()
+        {
+            Color = UserColors.GetRandom(ChatPartner?.Name ?? string.Empty);
+        }
+
+        public ChatPartnerViewModel(UserIdentity chatPartner, Color color)
         {
             Color = color;
             ChatPartner = chatPartner;
         }
+
+        public bool Equals(UserIdentity userIdentity) => ChatPartner.Equals(userIdentity);
     }
 }

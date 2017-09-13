@@ -12,7 +12,7 @@ namespace Flexx.Wpf
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             if (item is IPublicChatViewModel) return PublicTemplate;
-            if (item is IPrivateChatViewModel) return PrivateTemplate;
+            //if (item is IPrivateChatViewModel) return PrivateTemplate;
             return null;
         }
     }

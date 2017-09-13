@@ -70,20 +70,26 @@
     <Compile Include="ChatCollection.cs" />
     <Compile Include="ColorManager.cs" />
     <Compile Include="Commands\ApplicationCommands.cs" />
+    <Compile Include="Commands\BeginInviteCommandArgs.cs" />
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\ChatIcon.cs" />
+    <Compile Include="Controls\DragDropListView.cs" />
+    <Compile Include="Controls\DropDataFormatCollection.cs" />
+    <Compile Include="Controls\ListViewItem.cs" />
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="Converter\DateTimeToIsInactiveConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="ChatListTemplateSelector.cs" />
+    <Compile Include="DelegateCommandT.cs" />
+    <Compile Include="Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="MessageTemplateSelector.cs" />
     <Compile Include="PeriodicBindingUpdateBehavior.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\Abstractions\IChatPartnerViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IMessageViewModel.cs" />
-    <Compile Include="ViewModels\Abstractions\IPrivateChatViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IPublicChatViewModel.cs" />
     <Compile Include="ViewModels\Abstractions\IViewModel.cs" />
     <Compile Include="ViewModels\ChatPartnerViewModel.cs" />
@@ -95,12 +101,22 @@
     <Compile Include="ViewModels\Mock\MockChatViewModel.cs" />
     <Compile Include="ViewModels\Mock\MockMainViewModel.cs" />
     <Compile Include="ViewModels\Mock\MockMessageViewModel.cs" />
-    <Compile Include="ViewModels\Mock\MockPrivateChatViewModel.cs" />
     <Compile Include="ViewModels\Mock\MockPublicChatViewModel.cs" />
-    <Compile Include="ViewModels\PrivateChatViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PublicChatViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
+    <Page Include="Recources\DataTemplates\ChatPartnerListTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Recources\DataTemplates\ChatListTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Recources\DataTemplates\ChatTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,13 +174,6 @@
   <ItemGroup>
     <Resource Include="Recources\Images\itech_bg.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Recources\UserFileTemplate.xml">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Themes\Styles\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

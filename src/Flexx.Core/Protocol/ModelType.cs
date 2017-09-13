@@ -3,7 +3,7 @@
     internal enum ModelType
     {
         KeepAlive,
-        PublicMessage,
-        PrivateMessage
+        Message,
+        Invite
     }
 }

@@ -1,6 +1,10 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Flexx.Core;
 using Flexx.Wpf.ViewModels;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf
 {
@@ -49,6 +53,33 @@ namespace Flexx.Wpf
             if (string.IsNullOrWhiteSpace(ChatNameBox.Text) || string.IsNullOrWhiteSpace(ChatPskBox.Text))
                 return;
             (DataContext as MainViewModel)?.EnterPublicChat(ChatNameBox.Text, ChatPskBox.Text);
+        }
+
+        private void ChatFrame_OnDrop(object sender, DragEventArgs e)
+        {
+            if (!(sender is ContentPresenter presenter))
+                return;
+            if (!(presenter.Content is PublicChatViewModel chatViewModel))
+                return;
+
+            var formats = e.Data.GetFormats();
+            if (!e.Data.GetFormats().Contains("InviteFormat")
+                || !(e.Data.GetData("InviteFormat") is IChatPartnerViewModel user))
+                return;
+            
+            chatViewModel.SendInvite(user.ChatPartner);
+        }
+
+        private void ChatPartnerList_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            OnMouseMove(e);
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+            if (!(sender is ListView listView)) return;
+
+            var data = new DataObject();
+            data.SetData("InviteFormat", listView.SelectedItem);
+            
+            DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
         }
     }
 }

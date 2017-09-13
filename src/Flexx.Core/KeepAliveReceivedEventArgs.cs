@@ -4,9 +4,9 @@ namespace Flexx.Core
 {
     public class KeepAliveReceivedEventArgs : EventArgs
     {
-        public ChatPartner Sender { get; }
+        public UserIdentity Sender { get; }
 
-        public KeepAliveReceivedEventArgs(ChatPartner sender)
+        public KeepAliveReceivedEventArgs(UserIdentity sender)
         {
             Sender = sender;
         }

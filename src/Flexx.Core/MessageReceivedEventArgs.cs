@@ -7,9 +7,9 @@ namespace Flexx.Core
     {
         public Message Message { get; }
 
-        public ChatPartner Sender { get; }
+        public UserIdentity Sender { get; }
 
-        public MessageReceivedEventArgs(ChatPartner sender, Message message)
+        public MessageReceivedEventArgs(UserIdentity sender, Message message)
         {
             Sender = sender;
             Message = message;

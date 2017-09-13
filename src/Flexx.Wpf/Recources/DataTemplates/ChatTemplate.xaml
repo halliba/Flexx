@@ -1,0 +1,67 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:abstractions="clr-namespace:Flexx.Wpf.ViewModels.Abstractions"
+                    xmlns:wpf="clr-namespace:Flexx.Wpf"
+                    xmlns:controls="clr-namespace:Flexx.Wpf.Controls">
+    <DataTemplate DataType="{x:Type abstractions:IChatViewModel}" x:Key="ChatTemplate">
+        <Border ClipToBounds="True" Background="{StaticResource BackgroundBrushLight}">
+            <Grid>
+                <Grid.Background>
+                    <ImageBrush ImageSource="../Images/itech_bg.png" TileMode="Tile" Viewport="0,0,788,441" ViewportUnits="Absolute"/>
+                </Grid.Background>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto"
+                                  wpf:AutoScrollBehavior.AutoScroll="True" VerticalAlignment="Bottom">
+                    <ItemsControl ItemsSource="{Binding Messages}" BorderBrush="Transparent" BorderThickness="0"
+                                      HorizontalContentAlignment="Stretch">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DataTemplate.Resources>
+                                    <DataTemplate DataType="{x:Type abstractions:IMessageViewModel}" x:Key="MineMessageTemplate">
+                                        <Grid Margin="40,2,10,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="1" Height="22" Width="22" VerticalAlignment="Bottom" Margin="3" Fill="{Binding Sender.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"/>
+                                            <Border Grid.Column="0" Background="{StaticResource BackgroundBrushSemiLight}" CornerRadius="5" Margin="3"
+                                                        HorizontalAlignment="Right">
+                                                <TextBlock Margin="5" Text="{Binding Content}" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type abstractions:IMessageViewModel}" x:Key="OppositeMessageTemplate">
+                                        <Grid Margin="10,2,40,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="0" Height="22" Width="22" VerticalAlignment="Bottom" Margin="3" Fill="{Binding Sender.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"/>
+                                            <Border Grid.Column="1" Background="{StaticResource BackgroundBrushSemiLight}" CornerRadius="5" Margin="3"
+                                                        HorizontalAlignment="Left">
+                                                <TextBlock Margin="5" Text="{Binding Content}" TextWrapping="Wrap" HorizontalAlignment="Left"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                    <wpf:MessageTemplateSelector x:Key="TemplateSelector"
+                                                                       MineTemplate="{StaticResource MineMessageTemplate}"
+                                                                       OppositeTemplate="{StaticResource OppositeMessageTemplate}"/>
+
+                                </DataTemplate.Resources>
+                                <ContentPresenter ContentTemplateSelector="{StaticResource TemplateSelector}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <controls:CommandTextBox Grid.Row="1" Grid.Column="0" Margin="5,5,5,5" Padding="2" x:Name="MessageBox"
+                                                 Background="{StaticResource BackgroundBrushSemiLight}"
+                                                 Foreground="{StaticResource ForegroundBrushLight}"
+                                                 Text="{Binding MessageDraft, UpdateSourceTrigger=PropertyChanged}"
+                                             Command="{Binding SendMessageCommand}" CommandParameter="{Binding MessageDraft}"/>
+            </Grid>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

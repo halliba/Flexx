@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Flexx.Core.Utils
@@ -7,7 +8,17 @@ namespace Flexx.Core.Utils
     {
         public static async Task<T> DeserializeAsync<T>(string value)
         {
-            return await Task.Run(() => JsonConvert.DeserializeObject<T>(value));
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(value);
+                }
+                catch (Exception)
+                {
+                    return default(T);
+                }
+            });
         }
 
         public static async Task<string> SerializeAsync(object value)

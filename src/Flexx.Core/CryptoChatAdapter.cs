@@ -11,7 +11,7 @@ namespace Flexx.Core
 {
     internal class CryptoChatAdapter : IDisposable
     {
-        public event EventHandler<MessageReceivedEventArgs> PrivateMessageReceived;
+        public event EventHandler<InviteReceivedEventArgs> InviteReceived;
         public event EventHandler<KeepAliveReceivedEventArgs> KeepAliveReceived;
         
         private bool _disposed;
@@ -31,6 +31,15 @@ namespace Flexx.Core
         }
 
         internal PublicChatRoom EnterPublicChatRoom(string name, string preSharedKey)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (preSharedKey == null) throw new ArgumentNullException(nameof(preSharedKey));
+            var chatRoom = new PublicChatRoom(this, name, preSharedKey);
+            _publicRooms.Add(chatRoom);
+            return chatRoom;
+        }
+
+        internal PublicChatRoom EnterPublicChatRoom(string name, byte[] preSharedKey)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (preSharedKey == null) throw new ArgumentNullException(nameof(preSharedKey));
@@ -63,11 +72,11 @@ namespace Flexx.Core
                     case ModelType.KeepAlive:
                         HandleIncomingKeepAliveAsync(args.PacketJson);
                         break;
-                    case ModelType.PublicMessage:
+                    case ModelType.Message:
                         HandleIncomingPublicMessageAsync(args.PacketJson);
                         break;
-                    case ModelType.PrivateMessage:
-                        HandleIncomingPrivateMessageAsync(args.PacketJson);
+                    case ModelType.Invite:
+                        HandleIncomingInviteAsync(args.PacketJson);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -78,13 +87,13 @@ namespace Flexx.Core
             }
         }
 
-        private async void HandleIncomingPrivateMessageAsync(string json)
+        private async void HandleIncomingInviteAsync(string json)
         {
-            var packet = await JsonUtils.DeserializeAsync<PrivateMessagePacket>(json);
-            if (packet == null)
+            var packet = await JsonUtils.DeserializeAsync<InvitePacket>(json);
+            if (packet?.Content == null || packet.AesKey == null)
                 return;
 
-            Message message;
+            Invite invite;
             try
             {
                 var aesKey = CryptUtils.RsaDecryptWithPrivate(packet.AesKey, 0, packet.AesKey.Length,
@@ -92,8 +101,11 @@ namespace Flexx.Core
                 var decrypted = CryptUtils.AesDecryptBytes(packet.Content, aesKey);
                 var signedDataJson = Config.DefaultEncoding.GetString(decrypted);
 
-                message = await GetAndVerifySignedDataAsync<Message>(signedDataJson);
-                if (message == null) return;
+                invite = await GetAndVerifySignedDataAsync<Invite>(signedDataJson);
+                if (invite?.Name == null
+                    || invite.PreSharedKey == null
+                    || invite.Sender?.Name == null
+                    || invite.Sender.PublicKey == null) return;
             }
             catch (CryptographicException)
             {
@@ -103,25 +115,23 @@ namespace Flexx.Core
             {
                 return;
             }
-
-            var partner = new ChatPartner(message.Sender);
-            OnKeepAliveReceived(partner);
-            OnPrivateMessageReceived(partner, message);
+            
+            OnKeepAliveReceived(invite.Sender);
+            OnInviteReceived(invite.Name, invite.PreSharedKey, invite.Sender);
         }
 
         private async void HandleIncomingKeepAliveAsync(string json)
         {
             var packet = await JsonUtils.DeserializeAsync<KeepAliveMessagePacket>(json);
-            if (packet == null)
+            if (packet?.Content == null)
                 return;
 
             var packetContent = Config.DefaultEncoding.GetString(packet.Content);
             var keepAlive = await GetAndVerifySignedDataAsync<KeepAlive>(packetContent);
-            if (keepAlive == null)
+            if (keepAlive?.Sender == null)
                 return;
             
-            var partner = new ChatPartner(keepAlive.Sender);
-            OnKeepAliveReceived(partner);
+            OnKeepAliveReceived(keepAlive.Sender);
         }
 
         private async void HandleIncomingPublicMessageAsync(string json)
@@ -138,11 +148,10 @@ namespace Flexx.Core
             var signedJson = Config.DefaultEncoding.GetString(decrypted);
 
             var message = await GetAndVerifySignedDataAsync<Message>(signedJson);
-            if (message == null) return;
+            if (message?.Sender == null) return;
             
-            var partner = new ChatPartner(message.Sender);
-            OnKeepAliveReceived(partner);
-            chatRoom.OnPublicMessageReceived(new MessageReceivedEventArgs(partner, message));
+            OnKeepAliveReceived(message.Sender);
+            chatRoom.OnPublicMessageReceived(new MessageReceivedEventArgs(message.Sender, message));
         }
 
         #endregion
@@ -198,28 +207,28 @@ namespace Flexx.Core
             }
         }
 
-        internal async Task SendPrivateMessageAsync(string content, ChatPartner chatPartner)
+        internal async Task SendInviteAsync(string name, byte[] preSharedKey, UserIdentity receiver)
         {
             if (_disposed)
                 throw new ObjectDisposedException(null);
 
             try
             {
-                var message = new Message
+                var invite = new Invite
                 {
-                    Content = content,
-                    Sender = _personalIdentity,
-                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
+                    Name = name,
+                    PreSharedKey = preSharedKey,
+                    Sender = _publicIdentity
                 };
-                var signedData = await CreateSignAndEncodeDataAsync(message);
+                var signedData = await CreateSignAndEncodeDataAsync(invite);
 
-                var publicKey = PemUtils.GetKeyFromPem(chatPartner.Identity.PublicKey);
+                var publicKey = PemUtils.GetKeyFromPem(receiver.PublicKey);
                 var aesKey = CryptUtils.GenrateAesKey();
 
                 var encryptedAesKey = CryptUtils.RsaEncryptWithPublic(aesKey, publicKey);
                 var encryptedData = CryptUtils.AesEncryptByteArray(signedData, aesKey);
 
-                var packet = new PrivateMessagePacket(encryptedData, encryptedAesKey);
+                var packet = new InvitePacket(encryptedData, encryptedAesKey);
 
                 await _networkHandler.SendPacketAsync(packet);
             }
@@ -272,14 +281,14 @@ namespace Flexx.Core
 
         #region event incovators
 
-        private void OnKeepAliveReceived(ChatPartner sender)
+        private void OnKeepAliveReceived(UserIdentity sender)
         {
             KeepAliveReceived?.Invoke(this, new KeepAliveReceivedEventArgs(sender));
         }
-        
-        private void OnPrivateMessageReceived(ChatPartner sender, Message message)
+
+        protected void OnInviteReceived(string name, byte[] psk, UserIdentity sender)
         {
-            PrivateMessageReceived?.Invoke(this, new MessageReceivedEventArgs(sender, message));
+            InviteReceived?.Invoke(this, new InviteReceivedEventArgs(name, psk, sender));
         }
 
         #endregion

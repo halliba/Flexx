@@ -14,12 +14,20 @@ namespace Flexx.Core
 
         private readonly byte[] _nameBytes;
 
-        internal PublicChatRoom(CryptoChatAdapter cryptoAdapter, string name, string preSharedKey)
+        internal PublicChatRoom(CryptoChatAdapter cryptoAdapter, string name, string password)
         {
             Name = name;
             _nameBytes = Config.DefaultEncoding.GetBytes(Name);
             _cryptoAdapter = cryptoAdapter;
-            PreSharedKey = GeneratePreSharedKey(preSharedKey);
+            PreSharedKey = GeneratePreSharedKey(password);
+        }
+
+        internal PublicChatRoom(CryptoChatAdapter cryptoAdapter, string name, byte[] preSharedKey)
+        {
+            Name = name;
+            _nameBytes = Config.DefaultEncoding.GetBytes(Name);
+            _cryptoAdapter = cryptoAdapter;
+            PreSharedKey = preSharedKey;
         }
 
         internal void OnPublicMessageReceived(MessageReceivedEventArgs args) => OnMessageReceived(args);
@@ -38,14 +46,19 @@ namespace Flexx.Core
             return encrypted;
         }
 
-        private static byte[] GeneratePreSharedKey(string preSharedKey)
+        internal static byte[] GeneratePreSharedKey(string password)
         {
-            return new SHA256Managed().ComputeHash(Config.DefaultEncoding.GetBytes(preSharedKey));
+            return new SHA256Managed().ComputeHash(Config.DefaultEncoding.GetBytes(password));
         }
 
         public async Task SendMessageAsync(string content)
         {
             await _cryptoAdapter.SendPublicMessageAsync(this, content);
+        }
+
+        public async Task SendInviteAsync(UserIdentity user)
+        {
+            await _cryptoAdapter.SendInviteAsync(Name, PreSharedKey, user);
         }
     }
 }

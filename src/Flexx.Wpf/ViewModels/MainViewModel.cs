@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Timers;
 using System.Windows;
 using Flexx.Core;
 using Flexx.Core.Utils;
+using Flexx.Wpf.Commands;
 using Flexx.Wpf.Properties;
 using Flexx.Wpf.ViewModels.Abstractions;
 
@@ -13,11 +14,17 @@ namespace Flexx.Wpf.ViewModels
     internal class MainViewModel : ViewModel, IMainViewModel
     {
         private readonly PersonalIdentity _identity = GetIdentity();
-        private readonly ChatPartner _self;
+        private readonly ChatPartnerViewModel _self;
         private readonly ChatApplication _chatApp;
+        private DelegateCommand<SendInviteCommandArgs> _sendInviteCommand;
 
         public ChatCollection Chats { get; } = new ChatCollection();
 
+        public ObservableCollection<ChatPartnerViewModel> ChatPartners { get; } = new ObservableCollection<ChatPartnerViewModel>();
+
+        public DelegateCommand<SendInviteCommandArgs> SendInviteCommand => _sendInviteCommand
+            ?? (_sendInviteCommand = new DelegateCommand<SendInviteCommandArgs>(args => args.Chat.SendInvite(args.User)));
+        
         public bool IsIncognitoModeEnabled
         {
             get => !_chatApp.SendKeepAlive;
@@ -31,38 +38,18 @@ namespace Flexx.Wpf.ViewModels
 
         public MainViewModel()
         {
-            _self = new ChatPartner(_identity);
+            _self = new ChatPartnerViewModel(_identity);
 #if DEBUG
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
-                Chats.Add(new PrivateChatViewModel(null,
-                    new ChatPartner(PersonalIdentity.Generate("User 1"))));
-                Chats.Add(new PrivateChatViewModel(null,
-                    new ChatPartner(PersonalIdentity.Generate("User 2")))
-                {
-                    LastActivity = DateTime.Now - TimeSpan.FromHours(4)
-                });
-                Chats.Add(new PrivateChatViewModel(null,
-                    new ChatPartner(PersonalIdentity.Generate("User 3")))
-                {
-                    LastActivity = DateTime.Now - TimeSpan.FromHours(12)
-                });
-                Chats.Add(new PrivateChatViewModel(null,
-                    new ChatPartner(PersonalIdentity.Generate("User 4")))
-                {
-                    LastActivity = DateTime.Now - TimeSpan.FromHours(1443)
-                });
                 return;
             }
 #endif
-
-            //var timer = new Timer();
-            //timer.Elapsed
-
+            
             _chatApp = new ChatApplication(_identity);
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
-            _chatApp.PrivateMessageReceived += ChatAppOnPrivateMessageReceived;
+            _chatApp.InviteReceived += ChatAppOnInviteReceived;
             Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
         }
 
@@ -83,43 +70,36 @@ namespace Flexx.Wpf.ViewModels
 
             return identity;
         }
-        
-        private void ChatAppOnPrivateMessageReceived(object sender, MessageReceivedEventArgs args)
+
+
+        private void ChatAppOnInviteReceived(object sender, InviteReceivedEventArgs args)
         {
-            if (args.Sender.Identity.Equals(_identity))
+            if (args.Sender.Equals(_identity))
                 return;
 
-            Application.Current?.Dispatcher.Invoke(() =>
-            {
-                var chat = Chats.OfType<PrivateChatViewModel>().FirstOrDefault(c => c.ChatPartner.ChatPartner.Equals(args.Sender));
-                if (chat != null)
-                {
-                    chat.NewIncomingMessage(args.Message, args.Sender);
-                }
-                else
-                {
-                    chat = new PrivateChatViewModel(_chatApp, args.Sender);
-                    Chats.Add(chat);
-                    chat.NewIncomingMessage(args.Message, args.Sender);
-                }
-            });
+            var result = MessageBox.Show(
+                $"{args.Sender.Name} hat dich zum Chat {args.Name} eingeladen. Möchtest du teilnehmen?",
+                "Chat-Einladung", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+                EnterPublicChat(args.Name, args.Psk);
         }
 
         private void ChatAppOnKeepAliveReceived(object sender, KeepAliveReceivedEventArgs args)
         {
-            if (args.Sender.Identity.Equals(_identity))
+            if (args.Sender.Equals(_identity))
                 return;
             
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                var chat = Chats.OfType<PrivateChatViewModel>().FirstOrDefault(c => c.ChatPartner.ChatPartner.Equals(args.Sender));
-                if (chat != null)
+                var existing = ChatPartners.FirstOrDefault(c => c.Equals(args.Sender));
+                if (existing == null)
                 {
-                    chat.LastActivity = DateTime.Now;
+                    existing = new ChatPartnerViewModel(args.Sender);
+                    ChatPartners.Add(existing);
                 }
                 else
                 {
-                    Chats.Add(new PrivateChatViewModel(_chatApp, args.Sender));
+                    existing.LastActivity = DateTime.Now;
                 }
             });
         }
@@ -127,6 +107,14 @@ namespace Flexx.Wpf.ViewModels
         public IPublicChatViewModel EnterPublicChat(string name, string password)
         {
             var room = _chatApp.EnterPublicChatRoom(name, password);
+            var viewModel = new PublicChatViewModel(room, _self);
+            Chats.Add(viewModel);
+            return viewModel;
+        }
+
+        public IPublicChatViewModel EnterPublicChat(string name, byte[] preSharedKey)
+        {
+            var room = _chatApp.EnterPublicChatRoom(name, preSharedKey);
             var viewModel = new PublicChatViewModel(room, _self);
             Chats.Add(viewModel);
             return viewModel;

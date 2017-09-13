@@ -6,7 +6,10 @@ namespace Flexx.Wpf.ViewModels.Abstractions
     internal interface IChatPartnerViewModel : IViewModel
     {
         string Abbreviation { get; }
-        ChatPartner ChatPartner { get; }
         Color Color { get; set; }
+        string Name { get; }
+        UserIdentity ChatPartner { get; }
+
+        bool Equals(UserIdentity identity);
     }
 }

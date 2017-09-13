@@ -9,13 +9,13 @@ namespace Flexx.Wpf.ViewModels
     {
         private readonly PublicChatRoom _chatRoom;
 
-        private readonly ChatPartner _self;
+        private readonly IChatPartnerViewModel _self;
 
         public string Name => _chatRoom.Name;
 
         public string Abbreviation => _chatRoom.Name.Substring(0, 1).ToUpper();
 
-        public PublicChatViewModel(PublicChatRoom chatRoom, ChatPartner self)
+        public PublicChatViewModel(PublicChatRoom chatRoom, IChatPartnerViewModel self)
         {
             _chatRoom = chatRoom;
             chatRoom.MessageReceived += NewIncomingMessage;
@@ -24,16 +24,21 @@ namespace Flexx.Wpf.ViewModels
 
         protected override async void SendMessage(string message)
         {
-            var viewModel = new MessageViewModel(true, _self, ChatPartner.Public, message, DateTime.Now);
+            var viewModel = new MessageViewModel(true, _self, UserIdentity.Public, message, DateTime.Now);
             Messages.Add(viewModel);
             LastActivity = DateTime.Now;
             await _chatRoom.SendMessageAsync(message);
             viewModel.IsSend = true;
         }
 
+        public async void SendInvite(UserIdentity user)
+        {
+            await _chatRoom.SendInviteAsync(user);
+        }
+
         private void NewIncomingMessage(object sender, MessageReceivedEventArgs args)
         {
-            if (args.Sender.Identity.Equals(_self.Identity))
+            if (_self.Equals(args.Sender))
                 return;
 
             var viewModel = new MessageViewModel(false, args.Sender, _self, args.Message.Content, DateTime.Now) {IsSend = true};

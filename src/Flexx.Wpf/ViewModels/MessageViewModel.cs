@@ -29,10 +29,19 @@ namespace Flexx.Wpf.ViewModels
 
         public IChatPartnerViewModel Receipient { get; }
 
-        public MessageViewModel(bool isMine, ChatPartner sender, ChatPartner receipient, string content, DateTime timeStamp)
+        public MessageViewModel(bool isMine, UserIdentity sender, IChatPartnerViewModel receipient, string content, DateTime timeStamp)
         {
             IsMine = isMine;
             Sender = new ChatPartnerViewModel(sender);
+            Receipient = receipient;
+            Content = content;
+            TimeStamp = timeStamp;
+        }
+
+        public MessageViewModel(bool isMine, IChatPartnerViewModel sender, UserIdentity receipient, string content, DateTime timeStamp)
+        {
+            IsMine = isMine;
+            Sender = sender;
             Receipient = new ChatPartnerViewModel(receipient);
             Content = content;
             TimeStamp = timeStamp;

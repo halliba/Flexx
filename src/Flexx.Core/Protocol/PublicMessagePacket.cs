@@ -10,7 +10,7 @@ namespace Flexx.Core.Protocol
 
         public PublicMessagePacket(byte[] content, byte[] chatRoom)
         {
-            Type = ModelType.PublicMessage;
+            Type = ModelType.Message;
             Content = content;
             ChatRoom = chatRoom;
             Id = Guid.NewGuid();
@@ -18,7 +18,7 @@ namespace Flexx.Core.Protocol
 
         public PublicMessagePacket()
         {
-            Type = ModelType.PublicMessage;
+            Type = ModelType.Message;
         }
     }
 }
