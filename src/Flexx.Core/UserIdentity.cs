@@ -4,7 +4,7 @@ namespace Flexx.Core
 {
     public class UserIdentity
     {
-        protected bool Equals(UserIdentity other)
+        public bool Equals(UserIdentity other)
         {
             return string.Equals(Name, other.Name) && string.Equals(PublicKey, other.PublicKey) && IsPublic == other.IsPublic;
         }
@@ -20,7 +20,7 @@ namespace Flexx.Core
         {
             unchecked
             {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                var hashCode = Name != null ? Name.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (PublicKey != null ? PublicKey.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ IsPublic.GetHashCode();
                 return hashCode;
