@@ -77,7 +77,6 @@
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converter\DateTimeToIsInactiveConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
-    <Compile Include="Database.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="ChatListTemplateSelector.cs" />
     <Compile Include="DelegateCommandT.cs" />
