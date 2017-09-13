@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Flexx.Core;
 using Flexx.Wpf.ViewModels;
 using Flexx.Wpf.ViewModels.Abstractions;
 

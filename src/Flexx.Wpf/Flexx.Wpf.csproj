@@ -74,9 +74,6 @@
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\ChatIcon.cs" />
-    <Compile Include="Controls\DragDropListView.cs" />
-    <Compile Include="Controls\DropDataFormatCollection.cs" />
-    <Compile Include="Controls\ListViewItem.cs" />
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converter\DateTimeToIsInactiveConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
