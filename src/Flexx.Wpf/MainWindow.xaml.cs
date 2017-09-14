@@ -60,8 +60,7 @@ namespace Flexx.Wpf
                 return;
             if (!(presenter.Content is PublicChatViewModel chatViewModel))
                 return;
-
-            var formats = e.Data.GetFormats();
+            
             if (!e.Data.GetFormats().Contains("InviteFormat")
                 || !(e.Data.GetData("InviteFormat") is IChatPartnerViewModel user))
                 return;

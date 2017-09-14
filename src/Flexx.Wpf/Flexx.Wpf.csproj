@@ -69,7 +69,6 @@
     <Compile Include="AutoScrollBehavior.cs" />
     <Compile Include="ChatCollection.cs" />
     <Compile Include="ColorManager.cs" />
-    <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\BeginInviteCommandArgs.cs" />
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\ChatFrame.cs" />
@@ -79,9 +78,7 @@
     <Compile Include="Converter\DateTimeToIsInactiveConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
-    <Compile Include="ChatListTemplateSelector.cs" />
     <Compile Include="DelegateCommandT.cs" />
-    <Compile Include="Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="MessageTemplateSelector.cs" />
     <Compile Include="PeriodicBindingUpdateBehavior.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -173,6 +170,8 @@
   <ItemGroup>
     <Resource Include="Recources\Images\itech_bg.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

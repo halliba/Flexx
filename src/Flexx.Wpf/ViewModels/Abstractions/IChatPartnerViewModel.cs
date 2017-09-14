@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 using Flexx.Core;
 
 namespace Flexx.Wpf.ViewModels.Abstractions
@@ -9,6 +10,7 @@ namespace Flexx.Wpf.ViewModels.Abstractions
         Color Color { get; set; }
         string Name { get; }
         UserIdentity ChatPartner { get; }
+        DateTime LastActivity { get; }
 
         bool Equals(UserIdentity identity);
     }

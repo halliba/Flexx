@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using Flexx.Core;
 using Flexx.Core.Utils;
 using Flexx.Wpf.Commands;
@@ -51,6 +52,9 @@ namespace Flexx.Wpf.ViewModels
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
             _chatApp.InviteReceived += ChatAppOnInviteReceived;
             Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
+
+            BindingOperations.EnableCollectionSynchronization(Chats, Chats);
+            BindingOperations.EnableCollectionSynchronization(ChatPartners, ChatPartners);
         }
 
         private static PersonalIdentity GetIdentity()
@@ -97,7 +101,7 @@ namespace Flexx.Wpf.ViewModels
                 var existing = ChatPartners.FirstOrDefault(c => c.Equals(args.Sender));
                 if (existing == null)
                 {
-                    existing = new ChatPartnerViewModel(args.Sender);
+                    existing = new ChatPartnerViewModel(args.Sender) {LastActivity = DateTime.Now};
                     ChatPartners.Add(existing);
                 }
                 else
@@ -124,6 +128,7 @@ namespace Flexx.Wpf.ViewModels
 
             var room = _chatApp.EnterPublicChatRoom(name, preSharedKey);
             var viewModel = new PublicChatViewModel(room, _self);
+
             Chats.Add(viewModel);
             return viewModel;
         }

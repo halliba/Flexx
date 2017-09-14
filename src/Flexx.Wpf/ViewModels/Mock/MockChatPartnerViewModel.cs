@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using System;
 using System.Windows.Media;
 using Flexx.Core;
 using Flexx.Wpf.ViewModels.Abstractions;
@@ -11,6 +12,7 @@ namespace Flexx.Wpf.ViewModels.Mock
         public Color Color { get; set; } = UserColors.GetRandom("User");
         public string Name { get; } = "Name";
         public UserIdentity ChatPartner { get; } = null;
+        public DateTime LastActivity { get; } = DateTime.Now;
 
         public bool Equals(UserIdentity identity)
         {

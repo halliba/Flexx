@@ -13,7 +13,7 @@ namespace Flexx.Core
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((UserIdentity) obj);
+            return obj.GetType() == GetType() && Equals((UserIdentity) obj);
         }
 
         public override int GetHashCode()

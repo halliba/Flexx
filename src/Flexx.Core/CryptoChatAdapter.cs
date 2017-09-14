@@ -198,7 +198,8 @@ namespace Flexx.Core
                 var signedData = await CreateSignAndEncodeDataAsync(message);
                 var encrypted = CryptUtils.AesEncryptByteArray(signedData, chatRoom.PreSharedKey);
 
-                var packet = new PublicMessagePacket(encrypted, chatRoom.GetEncryptedIdentifier());
+                var chatRoomIdentifier = chatRoom.GetEncryptedIdentifier();
+                var packet = new PublicMessagePacket(encrypted, chatRoomIdentifier);
 
                 await _networkHandler.SendPacketAsync(packet);
             }
@@ -286,7 +287,7 @@ namespace Flexx.Core
             KeepAliveReceived?.Invoke(this, new KeepAliveReceivedEventArgs(sender));
         }
 
-        protected void OnInviteReceived(string name, byte[] psk, UserIdentity sender)
+        private void OnInviteReceived(string name, byte[] psk, UserIdentity sender)
         {
             InviteReceived?.Invoke(this, new InviteReceivedEventArgs(name, psk, sender));
         }

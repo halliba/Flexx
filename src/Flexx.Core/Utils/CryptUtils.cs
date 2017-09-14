@@ -69,8 +69,8 @@ namespace Flexx.Core.Utils
                     var result = new byte[iv.Length + encryptedContent.Length];
 
                     //copy our 2 array into one
-                    System.Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
-                    System.Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
+                    Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
+                    Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
 
                     return result;
                 }

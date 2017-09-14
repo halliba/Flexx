@@ -8,8 +8,8 @@
     xmlns:converter="clr-namespace:Flexx.Wpf.Converter">
 
     <converter:DateTimeToTimeAgoConverter x:Key="DateTimeToTimeAgoConverter"/>
-    <converter:DateTimeToIsInactiveConverter x:Key="DateTimeToIsInactiveConverter"/>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converter:DateTimeToIsInactiveConverter x:Key="DateTimeToIsInactiveConverter"/>
 
     <Style x:Key="ChatListTextBlockStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrushLight}"/>
@@ -19,7 +19,7 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
+    
     <DataTemplate DataType="{x:Type abstractions:IPublicChatViewModel}" x:Key="ChatListTemplate">
         <Grid Margin="3,5,3,5">
             <Grid.ColumnDefinitions>
@@ -34,12 +34,10 @@
             <controls:ChatIcon Grid.Column="0" Margin="0,0,5,0" Grid.Row="0" Grid.RowSpan="2"
                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                        Abbreviation="{Binding Abbreviation}" Color="Green"/>
-            <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding Name}" Style="{StaticResource ChatListTextBlockStyle}"/>
-            <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}"
-                               Style="{StaticResource ChatListTextBlockStyle}">
+            <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" Text="{Binding Name}"/>
+            <TextBlock Grid.Column="1" Grid.Row="1" FontSize="9" Text="{Binding LastActivity, Converter={StaticResource DateTimeToTimeAgoConverter}}">
                     <i:Interaction.Behaviors>
                         <local:PeriodicBindingUpdateBehavior Interval="0:00:03" Property="{x:Static TextBlock.TextProperty}" Mode="UpdateTarget" />
-                        <local:PeriodicBindingUpdateBehavior Interval="0:00:03" Property="{x:Static TextBlock.ForegroundProperty}" Mode="UpdateTarget" />
                     </i:Interaction.Behaviors>
             </TextBlock>
             <TextBlock Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Text="{Binding UnreadMessageCount}" VerticalAlignment="Center"

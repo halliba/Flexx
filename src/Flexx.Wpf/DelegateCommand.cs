@@ -3,8 +3,9 @@ using System.Windows.Input;
 
 namespace Flexx.Wpf
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Represents a <see cref="ICommand"/> implementation, that can be used vi delegates and lamda expressions.
+    /// Represents a <see cref="T:System.Windows.Input.ICommand" /> implementation, that can be used vi delegates and lamda expressions.
     /// <remarks>Based on: https://wpftutorial.net/DelegateCommand.html</remarks>
     /// </summary>
     public class DelegateCommand : ICommand
@@ -46,8 +47,9 @@ namespace Flexx.Wpf
             CanExecuteChanged?.Invoke(this, null);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Executes the <see cref="ICommand.CanExecute"/> <see cref="Predicate{T}"/> and returns it's result.
+        /// Executes the <see cref="M:System.Windows.Input.ICommand.CanExecute(System.Object)" /> <see cref="T:System.Predicate`1" /> and returns it's result.
         /// </summary>
         /// <param name="parameter">The command parameter.</param>
         /// <returns>True, if the command is able to execute.</returns>
@@ -56,8 +58,9 @@ namespace Flexx.Wpf
             return _canExecute == null || _canExecute(parameter);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Executes the <see cref="ICommand.Execute"/> <see cref="Action{T}"/> with the given parameter.
+        /// Executes the <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)" /> <see cref="T:System.Action`1" /> with the given parameter.
         /// </summary>
         /// <param name="parameter">The command parameter.</param>
         public void Execute(object parameter)
