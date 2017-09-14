@@ -11,6 +11,7 @@ namespace Flexx.Wpf.ViewModels.Abstractions
         string Name { get; }
         UserIdentity ChatPartner { get; }
         DateTime LastActivity { get; }
+        string PublicKey { get; }
 
         bool Equals(UserIdentity identity);
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using Flexx.Core;
+using Flexx.Wpf.Properties;
 using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels
@@ -52,9 +53,8 @@ namespace Flexx.Wpf.ViewModels
         public string PublicKey => ChatPartner?.PublicKey;
 
         public ChatPartnerViewModel(UserIdentity chatPartner)
+            : this(chatPartner, UserColors.GetRandom(chatPartner?.Name ?? string.Empty))
         {
-            ChatPartner = chatPartner;
-            AssignColor();
         }
 
         private void AssignColor()
@@ -64,8 +64,8 @@ namespace Flexx.Wpf.ViewModels
 
         public ChatPartnerViewModel(UserIdentity chatPartner, Color color)
         {
-            Color = color;
             ChatPartner = chatPartner;
+            Color = color;
         }
 
         public bool Equals(UserIdentity userIdentity) => ChatPartner.Equals(userIdentity);

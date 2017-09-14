@@ -13,6 +13,7 @@ namespace Flexx.Wpf.ViewModels.Mock
         public string Name { get; } = "Name";
         public UserIdentity ChatPartner { get; } = null;
         public DateTime LastActivity { get; } = DateTime.Now;
+        public string PublicKey { get; } = null;
 
         public bool Equals(UserIdentity identity)
         {

@@ -37,6 +37,12 @@ namespace Flexx.Wpf.ViewModels
         {
             await _chatRoom.SendInviteAsync(user);
             Contents.Add(new ChatStatusMessage($"{user.Name} wurde zum Chat eingeladen"));
+            LastActivity = DateTime.Now;
+        }
+
+        public void AddMessage(IChatContent content)
+        {
+            Contents.Add(content);
         }
 
         private void NewIncomingMessage(object sender, MessageReceivedEventArgs args)

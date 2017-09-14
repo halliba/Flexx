@@ -251,7 +251,15 @@ namespace Flexx.Core
             if (baseModel?.Sender?.PublicKey == null)
                 return null;
 
-            var publicKey = PemUtils.GetKeyFromPem(baseModel.Sender.PublicKey);
+            AsymmetricKeyParameter publicKey;
+            try
+            {
+                publicKey = PemUtils.GetKeyFromPem(baseModel.Sender.PublicKey);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
             var dataToVerify = Config.DefaultEncoding.GetBytes(Convert.ToBase64String(signedData.Data));
             var isValid = SignUtils.Verify(dataToVerify, signedData.Signature, publicKey);
             if (!isValid)

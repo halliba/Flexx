@@ -76,7 +76,7 @@
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\ChatIcon.cs" />
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
-    <Compile Include="Converter\DateTimeToIsInactiveConverter.cs" />
+    <Compile Include="Converter\DateTimeToActivityColorConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="DelegateCommandT.cs" />
@@ -171,8 +171,6 @@
   <ItemGroup>
     <Resource Include="Recources\Images\itech_bg.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

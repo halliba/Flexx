@@ -16,7 +16,6 @@
 
             <converter:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
             <converter:DateTimeToTimeAgoConverter x:Key="DateTimeToTimeAgoConverter"/>
-            <converter:DateTimeToIsInactiveConverter x:Key="DateTimeToIsInactiveConverter"/>
 
             <Style x:Key="FocusVisual">
                 <Setter Property="Control.Template">

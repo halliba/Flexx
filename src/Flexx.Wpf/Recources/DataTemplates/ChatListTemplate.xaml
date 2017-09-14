@@ -9,15 +9,14 @@
 
     <converter:DateTimeToTimeAgoConverter x:Key="DateTimeToTimeAgoConverter"/>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    <converter:DateTimeToIsInactiveConverter x:Key="DateTimeToIsInactiveConverter"/>
 
     <Style x:Key="ChatListTextBlockStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrushLight}"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding LastActivity, Converter={StaticResource DateTimeToIsInactiveConverter}}" Value="True">
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding (abstractions:IChatPartnerViewModel.IsActive)}" Value="False">
                 <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
             </DataTrigger>
-        </Style.Triggers>
+        </Style.Triggers>-->
     </Style>
     
     <DataTemplate DataType="{x:Type abstractions:IPublicChatViewModel}" x:Key="ChatListTemplate">

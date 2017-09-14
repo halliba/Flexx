@@ -73,6 +73,8 @@ namespace Flexx.Wpf
             OnMouseMove(e);
             if (e.LeftButton != MouseButtonState.Pressed) return;
             if (!(sender is ListView listView)) return;
+            if (listView.SelectedItem == null)
+                return;
 
             var data = new DataObject();
             data.SetData("InviteFormat", listView.SelectedItem);

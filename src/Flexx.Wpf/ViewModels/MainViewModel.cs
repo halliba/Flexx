@@ -46,10 +46,25 @@ namespace Flexx.Wpf.ViewModels
             _chatApp = new ChatApplication(_identity);
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
             _chatApp.InviteReceived += ChatAppOnInviteReceived;
-            foreach (var storedChat in ChatStore.LoadChats())
+
+            var store = ChatStore.Load();
+            if (store?.Chats != null)
             {
-                var viewModel = EnterPublicChat(storedChat.Name, storedChat.PreSharedKey, true);
-                viewModel.LastActivity = storedChat.LastActivity;
+                foreach (var storedChat in store.Chats)
+                {
+                    var viewModel = EnterPublicChat(storedChat.Name, storedChat.PreSharedKey, true);
+                    viewModel.LastActivity = storedChat.LastActivity;
+                }
+            }
+            if (store?.Users != null)
+            {
+                foreach (var storedUser in store.Users)
+                {
+                    ChatPartners.Add(new ChatPartnerViewModel(new UserIdentity(storedUser.Name, storedUser.PublicKey))
+                    {
+                        LastActivity = storedUser.LastActivity
+                    });
+                }
             }
             if (Chats.Count == 0)
             {
@@ -108,6 +123,7 @@ namespace Flexx.Wpf.ViewModels
                 {
                     existing.LastActivity = DateTime.Now;
                 }
+                ChatStore.Store(Chats.OfType<IPublicChatViewModel>(), ChatPartners);
             });
         }
 
@@ -129,7 +145,7 @@ namespace Flexx.Wpf.ViewModels
             if (preventSave) return viewModel;
             try
             {
-                ChatStore.StoreChats(Chats.OfType<IPublicChatViewModel>());
+                ChatStore.Store(Chats.OfType<IPublicChatViewModel>(), ChatPartners);
             }
             catch (Exception)
             {
@@ -157,7 +173,7 @@ namespace Flexx.Wpf.ViewModels
             if (preventSave) return viewModel;
             try
             {
-                ChatStore.StoreChats(Chats.OfType<IPublicChatViewModel>());
+                ChatStore.Store(Chats.OfType<IPublicChatViewModel>(), ChatPartners);
             }
             catch (Exception)
             {
