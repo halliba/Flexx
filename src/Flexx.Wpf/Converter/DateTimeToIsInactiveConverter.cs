@@ -11,7 +11,6 @@ namespace Flexx.Wpf.Converter
             if (!(value is DateTime timeStamp)) return null;
 
             var difference = DateTime.Now - timeStamp;
-            Console.WriteLine(difference);
             return difference > TimeSpan.FromSeconds(10);
         }
 
