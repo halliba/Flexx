@@ -55,8 +55,7 @@ namespace Flexx.Core.Utils
                     cryptor.Padding = PaddingMode.PKCS7;
                     cryptor.KeySize = key.Length * 8;
                     cryptor.BlockSize = 128;
-
-                    //We use the random generated iv created by AesManaged
+                    
                     var iv = cryptor.IV;
 
                     using (var cs = new CryptoStream(ms, cryptor.CreateEncryptor(key, iv), CryptoStreamMode.Write))
@@ -65,10 +64,7 @@ namespace Flexx.Core.Utils
                     }
                     var encryptedContent = ms.ToArray();
 
-                    //Create new byte array that should contain both unencrypted iv and encrypted data
                     var result = new byte[iv.Length + encryptedContent.Length];
-
-                    //copy our 2 array into one
                     Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
                     Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
 
@@ -85,10 +81,9 @@ namespace Flexx.Core.Utils
         /// <returns>decrypted bytes</returns>
         public static byte[] AesDecryptBytes(byte[] encrypted, byte[] key)
         {
-            var iv = new byte[16]; //initial vector is 16 bytes
-            var encryptedContent = new byte[encrypted.Length - 16]; //the rest should be encryptedcontent
-
-            //Copy data to byte array
+            var iv = new byte[16];
+            var encryptedContent = new byte[encrypted.Length - 16];
+            
             Buffer.BlockCopy(encrypted, 0, iv, 0, iv.Length);
             Buffer.BlockCopy(encrypted, iv.Length, encryptedContent, 0, encryptedContent.Length);
 
