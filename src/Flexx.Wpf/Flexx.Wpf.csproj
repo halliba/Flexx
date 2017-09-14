@@ -68,6 +68,7 @@
     </ApplicationDefinition>
     <Compile Include="AutoScrollBehavior.cs" />
     <Compile Include="ChatCollection.cs" />
+    <Compile Include="ChatStore.cs" />
     <Compile Include="ColorManager.cs" />
     <Compile Include="Commands\BeginInviteCommandArgs.cs" />
     <Compile Include="Commands\WindowCommands.cs" />

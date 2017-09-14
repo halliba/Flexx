@@ -13,6 +13,8 @@ namespace Flexx.Wpf.ViewModels
 
         public string Name => _chatRoom.Name;
 
+        public byte[] PreSharedKey => _chatRoom.PreSharedKey;
+
         public string Abbreviation => _chatRoom.Name.Substring(0, 1).ToUpper();
 
         public PublicChatViewModel(PublicChatRoom chatRoom, IChatPartnerViewModel self)

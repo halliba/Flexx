@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -39,22 +38,23 @@ namespace Flexx.Wpf.ViewModels
 
         public MainViewModel()
         {
+            BindingOperations.EnableCollectionSynchronization(Chats, Chats);
+            BindingOperations.EnableCollectionSynchronization(ChatPartners, ChatPartners);
+
             _self = new ChatPartnerViewModel(_identity);
-#if DEBUG
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
-                return;
-            }
-#endif
-            
+
             _chatApp = new ChatApplication(_identity);
             _chatApp.KeepAliveReceived += ChatAppOnKeepAliveReceived;
             _chatApp.InviteReceived += ChatAppOnInviteReceived;
-            Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
-
-            BindingOperations.EnableCollectionSynchronization(Chats, Chats);
-            BindingOperations.EnableCollectionSynchronization(ChatPartners, ChatPartners);
+            foreach (var storedChat in ChatStore.LoadChats())
+            {
+                var viewModel = EnterPublicChat(storedChat.Name, storedChat.PreSharedKey, true);
+                viewModel.LastActivity = storedChat.LastActivity;
+            }
+            if (Chats.Count == 0)
+            {
+                Chats.Add(new PublicChatViewModel(_chatApp.EnterPublicChatRoom(), _self));
+            }
         }
 
         private static PersonalIdentity GetIdentity()
@@ -113,15 +113,38 @@ namespace Flexx.Wpf.ViewModels
 
         public IPublicChatViewModel EnterPublicChat(string name, string password)
         {
+            return EnterPublicChat(name, password, false);
+        }
+
+        public IPublicChatViewModel EnterPublicChat(string name, string password, bool preventSave)
+        {
             if (Chats.OfType<IPublicChatViewModel>().Any(c => c.Equals(name, password)))
                 return null;
+
             var room = _chatApp.EnterPublicChatRoom(name, password);
             var viewModel = new PublicChatViewModel(room, _self);
+
             Chats.Add(viewModel);
+
+            if (preventSave) return viewModel;
+            try
+            {
+                ChatStore.StoreChats(Chats.OfType<IPublicChatViewModel>());
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             return viewModel;
         }
 
         public IPublicChatViewModel EnterPublicChat(string name, byte[] preSharedKey)
+        {
+            return EnterPublicChat(name, preSharedKey, false);
+        }
+
+        private IPublicChatViewModel EnterPublicChat(string name, byte[] preSharedKey, bool preventSave)
         {
             if (Chats.OfType<IPublicChatViewModel>().Any(c => c.Equals(name, preSharedKey)))
                 return null;
@@ -130,6 +153,17 @@ namespace Flexx.Wpf.ViewModels
             var viewModel = new PublicChatViewModel(room, _self);
 
             Chats.Add(viewModel);
+
+            if (preventSave) return viewModel;
+            try
+            {
+                ChatStore.StoreChats(Chats.OfType<IPublicChatViewModel>());
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             return viewModel;
         }
     }

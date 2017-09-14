@@ -12,5 +12,6 @@ namespace Flexx.Wpf.ViewModels.Mock
 
         public string Abbreviation { get; }
         public string Name { get; }
+        public byte[] PreSharedKey { get; } = null;
     }
 }

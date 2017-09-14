@@ -9,7 +9,7 @@ namespace Flexx.Core
     {
         private readonly CryptoChatAdapter _cryptoAdapter;
 
-        internal readonly byte[] PreSharedKey;
+        public byte[] PreSharedKey { get; }
 
         public string Name { get; }
 
