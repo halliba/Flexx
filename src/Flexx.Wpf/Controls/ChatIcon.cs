@@ -30,13 +30,13 @@ namespace Flexx.Wpf.Controls
                 typeof(ChatIcon), new FrameworkPropertyMetadata(ComputedForegroundChanged));
 
             DarkForegroundColorProperty = DependencyProperty.Register(nameof(DarkForegroundColor), typeof(Color),
-                typeof(ChatIcon));
+                typeof(ChatIcon), new FrameworkPropertyMetadata(Colors.Black, ComputedForegroundChanged));
 
             LightForegroundColorProperty = DependencyProperty.Register(nameof(LightForegroundColor), typeof(Color),
-                typeof(ChatIcon));
+                typeof(ChatIcon), new FrameworkPropertyMetadata(Colors.White, ComputedForegroundChanged));
 
             DefaultForegroundColorProperty = DependencyProperty.Register(nameof(DefaultForegroundColor), typeof(Color),
-                typeof(ChatIcon));
+                typeof(ChatIcon), new FrameworkPropertyMetadata(Colors.Black, ComputedForegroundChanged));
 
             ComputedForegroundBrushPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ComputedForegroundBrush),
                 typeof(SolidColorBrush),
@@ -51,7 +51,15 @@ namespace Flexx.Wpf.Controls
 
             var bright = PerceivedBrightness(chatIcon.Color);
 
-            var brush = new SolidColorBrush(bright > 130 ? chatIcon.DarkForegroundColor : chatIcon.LightForegroundColor);
+            var dark = chatIcon.ReadLocalValue(DarkForegroundColorProperty);
+            var light = chatIcon.ReadLocalValue(LightForegroundColorProperty);
+
+            if (!(dark is Color) || dark == DependencyProperty.UnsetValue)
+                dark = Colors.Black;
+            if (!(light is Color) || light == DependencyProperty.UnsetValue)
+                light = Colors.White;
+            
+            var brush = new SolidColorBrush(bright > 130 ? (Color)dark : (Color)light);
             chatIcon.ComputedForegroundBrush = brush;
         }
 
@@ -63,7 +71,7 @@ namespace Flexx.Wpf.Controls
 
         public Color Color
         {
-            get => (Color) GetValue(ColorProperty);
+            get => (Color)GetValue(ColorProperty);
             set => SetValue(ColorProperty, value);
         }
 

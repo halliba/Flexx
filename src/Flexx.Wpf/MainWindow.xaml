@@ -6,6 +6,7 @@
         xmlns:mocks="clr-namespace:Flexx.Wpf.ViewModels.Mock"
         xmlns:commands="clr-namespace:Flexx.Wpf.Commands"
         xmlns:controls="clr-namespace:Flexx.Wpf.Controls"
+        xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d" Foreground="White" WindowStyle="None" AllowsTransparency="True"
         Height="500" Width="800" Background="{StaticResource BackgroundBrushSemiLight}"
         d:DataContext="{d:DesignInstance mocks:MockMainViewModel, d:IsDesignTimeCreatable=True}">
@@ -64,6 +65,13 @@
             </Button>
         </Grid>
         <Grid Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+            <Grid.Resources>
+                <CollectionViewSource x:Key="ChatItemSource" Source="{Binding Chats}">
+                    <CollectionViewSource.SortDescriptions>
+                        <componentModel:SortDescription PropertyName="LastActivity" Direction="Descending"/>
+                    </CollectionViewSource.SortDescriptions>
+                </CollectionViewSource>
+            </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="4*"/>
@@ -118,8 +126,8 @@
                     </Button>
                 </Grid>
 
-                <ListView Grid.Column="0" Background="Transparent" Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding Chats}" Name="ChatList"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
+                <ListView Grid.Column="0" Background="Transparent" Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" Name="ChatList"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Source={StaticResource ChatItemSource}}"
                           ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}">
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="commands:ChatAppCommands.Leave" CommandParameter="{Binding ElementName=ChatList, Path=SelectedItem}"/>
