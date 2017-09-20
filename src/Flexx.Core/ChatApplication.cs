@@ -48,8 +48,6 @@ namespace Flexx.Core
             _cryptoAdapter.EnterPublicChatRoom(name, preSharedKey);
 
         public PublicChatRoom EnterPublicChatRoom() => _cryptoAdapter.EnterPublicChatRoom();
-
-        public void LeavePublicChatRoom(PublicChatRoom chatRoom) => _cryptoAdapter.LeavePublicChatRoom(chatRoom);
         
         public async Task SendInviteAsync(string name, string password, UserIdentity chatPartner)
         {

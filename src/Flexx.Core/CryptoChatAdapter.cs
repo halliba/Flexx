@@ -254,9 +254,10 @@ namespace Flexx.Core
             AsymmetricKeyParameter publicKey;
             try
             {
-                publicKey = PemUtils.GetKeyFromPem(baseModel.Sender.PublicKey);
+                var publicKeyPem = baseModel.Sender.PublicKey.Replace("RSA PUBLIC KEY", "PUBLIC KEY");
+                publicKey = PemUtils.GetKeyFromPem(publicKeyPem);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
                 return null;
             }

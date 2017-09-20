@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Flexx.Core;
 using Flexx.Wpf.ViewModels.Abstractions;
@@ -13,6 +14,8 @@ namespace Flexx.Wpf.ViewModels
 
         public string Name => _chatRoom.Name;
 
+        public Color Color { get; }
+
         public byte[] PreSharedKey => _chatRoom.PreSharedKey;
 
         public string Abbreviation => _chatRoom.Name.Substring(0, 1).ToUpper();
@@ -22,6 +25,7 @@ namespace Flexx.Wpf.ViewModels
             _chatRoom = chatRoom;
             chatRoom.MessageReceived += NewIncomingMessage;
             _self = self;
+            Color = ChatColors.GetRandom(_chatRoom.Name);
         }
 
         protected override async void SendMessage(string message)
@@ -43,6 +47,11 @@ namespace Flexx.Wpf.ViewModels
         public void AddMessage(IChatContent content)
         {
             Contents.Add(content);
+        }
+
+        public void Leave()
+        {
+            _chatRoom.Leave();
         }
 
         private void NewIncomingMessage(object sender, MessageReceivedEventArgs args)

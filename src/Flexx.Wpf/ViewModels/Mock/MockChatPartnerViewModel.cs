@@ -9,7 +9,7 @@ namespace Flexx.Wpf.ViewModels.Mock
     internal class MockChatPartnerViewModel : ViewModel, IChatPartnerViewModel
     {
         public string Abbreviation { get; } = "U";
-        public Color Color { get; set; } = UserColors.GetRandom("User");
+        public Color Color { get; set; } = ChatColors.GetRandom("User");
         public string Name { get; } = "Name";
         public UserIdentity ChatPartner { get; } = null;
         public DateTime LastActivity { get; } = DateTime.Now;

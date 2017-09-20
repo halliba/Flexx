@@ -81,5 +81,12 @@ namespace Flexx.Wpf
             
             DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
         }
+
+        private void LeaveCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!(e.Parameter is IPublicChatViewModel chatViewModel))
+                return;
+            (DataContext as IMainViewModel)?.LeaveChatroomCommand?.Execute(chatViewModel);
+        }
     }
 }

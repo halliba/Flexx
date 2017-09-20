@@ -69,12 +69,14 @@
     <Compile Include="AutoScrollBehavior.cs" />
     <Compile Include="ChatCollection.cs" />
     <Compile Include="ChatStore.cs" />
-    <Compile Include="ColorManager.cs" />
+    <Compile Include="ChatColors.cs" />
+    <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\BeginInviteCommandArgs.cs" />
     <Compile Include="Commands\WindowCommands.cs" />
     <Compile Include="Controls\ChatFrame.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\ChatIcon.cs" />
+    <Compile Include="Converter\BackgroundToDarkOrLightForeground.cs" />
     <Compile Include="Converter\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converter\DateTimeToActivityColorConverter.cs" />
     <Compile Include="Converter\DateTimeToTimeAgoConverter.cs" />

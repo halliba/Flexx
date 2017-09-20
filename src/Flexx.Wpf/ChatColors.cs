@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace Flexx.Wpf
 {
-    internal static class UserColors
+    internal static class ChatColors
     {
         public static Color GetRandom(object seed)
         {

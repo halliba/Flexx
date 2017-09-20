@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Flexx.Wpf.Annotations;
 using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf

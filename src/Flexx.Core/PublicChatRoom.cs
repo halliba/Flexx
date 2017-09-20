@@ -71,5 +71,10 @@ namespace Flexx.Core
         {
             await _cryptoAdapter.SendInviteAsync(Name, PreSharedKey, user);
         }
+
+        public void Leave()
+        {
+            _cryptoAdapter.LeavePublicChatRoom(this);
+        }
     }
 }

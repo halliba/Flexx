@@ -13,6 +13,7 @@
         <CommandBinding Command="commands:WindowCommands.Minimize" CanExecute="AlwaysCanExecute" Executed="MinimizeCommand_OnExecuted"/>
         <CommandBinding Command="commands:WindowCommands.Maximize" CanExecute="AlwaysCanExecute" Executed="MaximizeCommand_OnExecuted"/>
         <CommandBinding Command="commands:WindowCommands.Close" CanExecute="AlwaysCanExecute" Executed="CloseCommand_OnExecuted"/>
+        <CommandBinding Command="commands:ChatAppCommands.Leave" CanExecute="AlwaysCanExecute" Executed="LeaveCommand_OnExecuted"/>
     </Window.CommandBindings>
     <Window.Style>
         <Style TargetType="{x:Type Window}">
@@ -109,18 +110,21 @@
                              Foreground="{StaticResource ForegroundBrushLight}"
                              Visibility="Collapsed"/>
                     <Button Grid.Column="1" Style="{StaticResource WindowTitleButton}" x:Name="ChatOpenButton" Click="ChatOpenButton_OnClick" Visibility="Collapsed">
-                        <Viewbox>
-                            <Canvas Width="16" Height="16">
-                                <Path Data="F1 M 4,3 L 3,3 L 3,12 L 4,12 L 4,3 Z"/>
-                                <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 13.657,3.757 L 12.243,2.343 L 8.000,6.586 L 3.757,2.343 L 2.343,3.757 L 6.586,8.000 L 2.343,12.243 L 3.757,13.657 L 8.000,9.414 L 12.243,13.657 L 13.657,12.243 L 9.414,8.000 L 13.657,3.757 Z"/>
+                        <Viewbox Width="16" Height="16">
+                            <Canvas Width="16.000" Height="16.000">
+                                <Path Fill="{StaticResource ForegroundBrushLight}" Data="F1 M 10.000,4.000 L 7.000,4.000 L 10.000,7.000 L 3.000,7.000 L 2.000,7.000 L 2.000,9.000 L 3.000,9.000 L 10.000,9.000 L 7.000,12.000 L 10.000,12.000 L 14.000,8.000 L 10.000,4.000 Z"/>
                             </Canvas>
                         </Viewbox>
                     </Button>
                 </Grid>
-                
+
                 <ListView Grid.Column="0" Background="Transparent" Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" ItemsSource="{Binding Chats}" Name="ChatList"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
-                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}"/>
+                          ItemContainerStyle="{StaticResource ChatSelectionItemContainerStyle}" ItemTemplate="{StaticResource ChatListTemplate}">
+                    <ListView.InputBindings>
+                        <KeyBinding Key="Delete" Command="commands:ChatAppCommands.Leave" CommandParameter="{Binding ElementName=ChatList, Path=SelectedItem}"/>
+                    </ListView.InputBindings>
+                </ListView>
 
                 <Label Grid.Row="4" Grid.Column="0" Content="Personen" BorderThickness="0,0,0,1" BorderBrush="{StaticResource ForegroundBrushSemiLight}"
                        HorizontalAlignment="Stretch"/>

@@ -1,4 +1,5 @@
-﻿using Flexx.Wpf.ViewModels.Abstractions;
+﻿using System.Windows.Media;
+using Flexx.Wpf.ViewModels.Abstractions;
 
 namespace Flexx.Wpf.ViewModels.Mock
 {
@@ -13,5 +14,11 @@ namespace Flexx.Wpf.ViewModels.Mock
         public string Abbreviation { get; }
         public string Name { get; }
         public byte[] PreSharedKey { get; } = null;
+        public Color Color { get; }
+
+        public void Leave()
+        {
+            return;
+        }
     }
 }

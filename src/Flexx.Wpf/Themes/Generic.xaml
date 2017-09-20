@@ -9,6 +9,9 @@
     <Style TargetType="{x:Type controls:ChatIcon}">
         <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="DarkForegroundColor" Value="{StaticResource ForegroundBrushDark}"/>
+        <Setter Property="LightForegroundColor" Value="{StaticResource ForegroundBrushLight}"/>
+        <Setter Property="DefaultForegroundColor" Value="{StaticResource ForegroundBrushDark}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:ChatIcon}">
@@ -16,7 +19,8 @@
                         <Ellipse Fill="{TemplateBinding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <TextBlock Text="{TemplateBinding Abbreviation}" FontSize="14"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding ComputedForegroundBrush}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

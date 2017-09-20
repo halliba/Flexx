@@ -8,6 +8,8 @@ namespace Flexx.Wpf.ViewModels.Abstractions
 
         ObservableCollection<ChatPartnerViewModel> ChatPartners { get; }
 
+        DelegateCommand<IPublicChatViewModel> LeaveChatroomCommand { get; }
+
         bool IsIncognitoModeEnabled { get; set; }
 
         IPublicChatViewModel EnterPublicChat(string name, string password);

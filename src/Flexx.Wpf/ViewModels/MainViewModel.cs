@@ -17,6 +17,7 @@ namespace Flexx.Wpf.ViewModels
         private readonly ChatPartnerViewModel _self;
         private readonly ChatApplication _chatApp;
         private DelegateCommand<SendInviteCommandArgs> _sendInviteCommand;
+        private DelegateCommand<IPublicChatViewModel> _leaveChatroomCommand;
 
         public ChatCollection Chats { get; } = new ChatCollection();
 
@@ -24,6 +25,9 @@ namespace Flexx.Wpf.ViewModels
 
         public DelegateCommand<SendInviteCommandArgs> SendInviteCommand => _sendInviteCommand
             ?? (_sendInviteCommand = new DelegateCommand<SendInviteCommandArgs>(args => args.Chat.SendInvite(args.User)));
+
+        public DelegateCommand<IPublicChatViewModel> LeaveChatroomCommand => _leaveChatroomCommand
+            ?? (_leaveChatroomCommand = new DelegateCommand<IPublicChatViewModel>(LeaveChatroom));
         
         public bool IsIncognitoModeEnabled
         {
@@ -181,6 +185,21 @@ namespace Flexx.Wpf.ViewModels
             }
 
             return viewModel;
+        }
+
+        private void LeaveChatroom(IPublicChatViewModel chatViewModel)
+        {
+            if (chatViewModel == null)
+                return;
+
+            var result = MessageBox.Show($"Willst du den Chatraum '{chatViewModel.Name} wirklich verlassen?", "Chatraum verlassen?", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            Chats.Remove(chatViewModel);
+            chatViewModel.Leave();
+
+            ChatStore.Store(Chats.OfType<IPublicChatViewModel>(), ChatPartners);
         }
     }
 }
