@@ -166,7 +166,8 @@ namespace Flexx.Core
             {
                 var keepAlive = new KeepAlive
                 {
-                    Sender = _publicIdentity
+                    Sender = _publicIdentity,
+                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
                 };
                 
                 var keepAliveData = await CreateSignAndEncodeDataAsync(keepAlive);
