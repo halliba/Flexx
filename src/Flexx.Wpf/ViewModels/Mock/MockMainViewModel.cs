@@ -8,7 +8,7 @@ namespace Flexx.Wpf.ViewModels.Mock
         public ChatCollection Chats { get; } = new ChatCollection();
 
         public ObservableCollection<ChatPartnerViewModel> ChatPartners { get; } = new ObservableCollection<ChatPartnerViewModel>();
-        public DelegateCommand<IPublicChatViewModel> LeaveChatroomCommand { get; }
+        public DelegateCommand<IPublicChatViewModel> LeaveChatroomCommand { get; } = null;
 
         public bool IsIncognitoModeEnabled { get; set; } = true;
 
