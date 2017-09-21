@@ -258,7 +258,7 @@ namespace Flexx.Core
                 var publicKeyPem = baseModel.Sender.PublicKey.Replace("RSA PUBLIC KEY", "PUBLIC KEY");
                 publicKey = PemUtils.GetKeyFromPem(publicKeyPem);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 return null;
             }
